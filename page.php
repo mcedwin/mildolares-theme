@@ -17,7 +17,7 @@
           </h1>
 
           <!-- Contenido -->
-          <div class="prose prose-lg max-w-3xl mx-auto space-y-6 text-lg">
+          <div class="prose prose-lg max-w-3xl">
             <?php the_content(); ?>
           </div>
 
