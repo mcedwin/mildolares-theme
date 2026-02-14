@@ -23,42 +23,42 @@
 
         <!-- NOTICIA PORTADA -->
         <!-- Título ancho completo -->
-    <h2 class="text-4xl font-bold mb-6 leading-tight">
-        <a href="<?php the_permalink(); ?>" class="hover:underline">
+        <h2 class="text-4xl font-bold mb-6 leading-tight">
+          <a href="<?php the_permalink(); ?>" class="hover:underline">
             <?php the_title(); ?>
-        </a>
-    </h2>
+          </a>
+        </h2>
 
-    <!-- Imagen + contenido -->
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
+        <!-- Imagen + contenido -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
 
-        <!-- Imagen -->
-        <div>
+          <!-- Imagen -->
+          <div>
             <?php if (has_post_thumbnail()) : ?>
-                <?php the_post_thumbnail('large', ['class' => 'rounded-xl w-full']); ?>
+              <?php the_post_thumbnail('large', ['class' => 'rounded-xl w-full']); ?>
             <?php endif; ?>
-        </div>
+          </div>
 
-        <!-- Contenido -->
-        <div class="text-lg text-gray-800 leading-relaxed">
+          <!-- Contenido -->
+          <div class="text-lg text-gray-800 leading-relaxed">
 
             <div class="text-sm text-gray-500 mb-4">
-                <?php the_time('F j, Y'); ?>
+              <?php the_time('F j, Y'); ?>
             </div>
 
             <?php the_excerpt(); ?>
 
             <div class="mt-6">
-                <a href="<?php the_permalink(); ?>" 
-                   class="text-green-900 font-semibold hover:underline">
-                   Leer más →
-                </a>
+              <a href="<?php the_permalink(); ?>"
+                class="text-green-900 font-semibold hover:underline">
+                Leer más →
+              </a>
             </div>
 
-        </div>
+          </div>
 
-    </div>
-<div class="border-t border-gray-300 mt-20 mb-16"></div>
+        </div>
+        <div class="border-t border-gray-300 mt-8 mb-8"></div>
         <!-- GRID DE NOTICIAS -->
         <section class="grid md:grid-cols-3 gap-8">
 

@@ -34,7 +34,7 @@
           <?php endif; ?>
 
           <!-- Contenido -->
-          <div class="space-y-6 text-lg">
+          <div class="prose prose-lg max-w-3xl mx-auto space-y-6 text-lg">
 
             <?php the_content(); ?>
 
