@@ -1,0 +1,34 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Gutenberg ajustes */
+.wp-block {
+  @apply mb-6;
+}
+
+.wp-block-image img {
+  @apply rounded-lg;
+}
+ 
+.wp-block-quote {
+  @apply border-l-4 border-primary pl-4 italic;
+}
+
+.wp-block-button__link {
+  @apply bg-primary text-white px-4 py-2 rounded-md;
+}
+
+/* Align Wide */
+.alignwide {
+  @apply max-w-6xl mx-auto;
+}
+
+.alignfull {
+  width: 100vw;
+  margin-left: calc(50% - 50vw);
+}
+
+.custom-logo {
+  @apply h-12 w-auto transition opacity-90 hover:opacity-100;
+}
