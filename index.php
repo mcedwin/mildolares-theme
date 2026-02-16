@@ -41,12 +41,14 @@
 
           <!-- Contenido -->
           <div class="text-lg text-gray-800 leading-relaxed">
-<!-- 
+            <!-- 
             <div class="text-sm text-gray-500 mb-4">
               <?php the_time('F j, Y'); ?>
             </div> -->
 
-            <?php the_excerpt(); ?>
+            <div class="leading-snug text-gray-700">
+    <?php the_excerpt(); ?>
+</div>
 
             <div class="mt-6">
               <a href="<?php the_permalink(); ?>"
@@ -83,9 +85,10 @@
                 <?php the_time('F j, Y'); ?>
               </div> -->
 
-              <div class="text-gray-800 leading-relaxed">
-                <?php the_excerpt(); ?>
-              </div>
+              <div class="leading-snug text-gray-700">
+    <?php the_excerpt(); ?>
+</div>
+
 
             </article>
 

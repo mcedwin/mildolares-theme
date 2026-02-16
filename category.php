@@ -3,7 +3,7 @@
 <div class="max-w-site mx-auto px-6">
 
   <!-- Título de categoría -->
-  <header class="mb-16">
+  <header class="mb-5">
 
     <h1 class="text-4xl font-bold mb-4">
       <?php single_cat_title(); ?>
@@ -15,7 +15,7 @@
       </div>
     <?php endif; ?>
 
-    <div class="border-t border-gray-200 mt-10"></div>
+    <div class="border-t border-gray-200"></div>
 
   </header>
 
@@ -46,9 +46,10 @@
                 <?php the_time('F j, Y'); ?>
               </div> -->
 
-              <div class="text-gray-800 leading-relaxed">
+              <div class="leading-snug text-gray-700">
                 <?php the_excerpt(); ?>
               </div>
+
 
             </article>
 
