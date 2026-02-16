@@ -33,7 +33,7 @@
             <article>
               <?php if (has_post_thumbnail()) : ?>
                 <div class="mb-5">
-                  <?php the_post_thumbnail('medium_large', ['class' => 'rounded-lg w-full']); ?>
+                  <?php the_post_thumbnail('thumbnail', ['class' => 'rounded-lg w-full']); ?>
                 </div>
               <?php endif; ?>
               <h2 class="text-2xl font-semibold mb-3">
