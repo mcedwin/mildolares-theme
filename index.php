@@ -35,16 +35,16 @@
           <!-- Imagen -->
           <div>
             <?php if (has_post_thumbnail()) : ?>
-              <?php the_post_thumbnail('large', ['class' => 'rounded-xl w-full']); ?>
+              <?php the_post_thumbnail('medium', ['class' => 'rounded-xl w-full']); ?>
             <?php endif; ?>
           </div>
 
           <!-- Contenido -->
           <div class="text-lg text-gray-800 leading-relaxed">
-
+<!-- 
             <div class="text-sm text-gray-500 mb-4">
               <?php the_time('F j, Y'); ?>
-            </div>
+            </div> -->
 
             <?php the_excerpt(); ?>
 
@@ -69,7 +69,7 @@
 
                 <?php if (has_post_thumbnail()) : ?>
                   <div class="mb-4">
-                    <?php the_post_thumbnail('medium', ['class' => 'rounded-lg w-full']); ?>
+                    <?php the_post_thumbnail('thumbnail', ['class' => 'rounded-lg w-full']); ?>
                   </div>
                 <?php endif; ?>
 
@@ -79,8 +79,12 @@
 
               </a>
 
-              <div class="text-sm text-gray-500">
+              <!-- <div class="text-sm text-gray-500">
                 <?php the_time('F j, Y'); ?>
+              </div> -->
+
+              <div class="text-gray-800 leading-relaxed">
+                <?php the_excerpt(); ?>
               </div>
 
             </article>

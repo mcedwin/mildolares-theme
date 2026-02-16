@@ -31,6 +31,16 @@ add_filter('use_block_editor_for_post', '__return_false', 10);
 // Desactivar el editor de bloques para widgets (opcional)
 add_filter('use_widgets_block_editor', '__return_false', 10);
 
+
+// Eliminar tamaños por defecto
+add_action('init', function() {
+    remove_image_size('thumbnail');
+    remove_image_size('medium');
+    remove_image_size('medium_large');
+    remove_image_size('large');
+});
+
+
 function mildolares_paginador($query = null) {
 
     if (!$query) {
@@ -93,3 +103,18 @@ function mildolares_paginador($query = null) {
     </div>
     <?php
 }
+
+// Activar soporte de imágenes destacadas
+add_theme_support('post-thumbnails');
+
+// Reemplazar tamaños por defecto
+update_option('thumbnail_size_w', 254);
+update_option('thumbnail_size_h', 174);
+update_option('thumbnail_crop', 1); // hard crop
+
+update_option('medium_size_w', 360);
+update_option('medium_size_h', 272);
+update_option('medium_crop', 1); // hard crop
+
+update_option('large_size_w', 1000); // ideal para tu layout ~1000px
+update_option('large_size_h', 0); // 0 = altura proporcional

@@ -26,46 +26,43 @@
 
       <?php if (have_posts()) : ?>
 
-        <div class="space-y-14">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 align-center">
 
-        <?php while (have_posts()) : the_post(); ?>
+          <?php while (have_posts()) : the_post(); ?>
 
-          <article>
+            <article>
+              <?php if (has_post_thumbnail()) : ?>
+                <div class="mb-5">
+                  <?php the_post_thumbnail('medium_large', ['class' => 'rounded-lg w-full']); ?>
+                </div>
+              <?php endif; ?>
+              <h2 class="text-2xl font-semibold mb-3">
+                <a href="<?php the_permalink(); ?>" class="hover:underline">
+                  <?php the_title(); ?>
+                </a>
+              </h2>
 
-            <h2 class="text-2xl font-semibold mb-3">
-              <a href="<?php the_permalink(); ?>" class="hover:underline">
-                <?php the_title(); ?>
-              </a>
-            </h2>
+              <!-- <div class="text-sm text-gray-500 mb-4">
+                <?php the_time('F j, Y'); ?>
+              </div> -->
 
-            <div class="text-sm text-gray-500 mb-4">
-              <?php the_time('F j, Y'); ?>
-            </div>
-
-            <?php if (has_post_thumbnail()) : ?>
-              <div class="mb-5">
-                <?php the_post_thumbnail('medium_large', ['class' => 'rounded-lg w-full']); ?>
+              <div class="text-gray-800 leading-relaxed">
+                <?php the_excerpt(); ?>
               </div>
-            <?php endif; ?>
 
-            <div class="text-gray-800 leading-relaxed">
-              <?php the_excerpt(); ?>
-            </div>
+            </article>
 
-          </article>
 
-          <div class="border-t border-gray-100"></div>
-
-        <?php endwhile; ?>
+          <?php endwhile; ?>
 
         </div>
 
         <!-- Paginación -->
         <div class="mt-16">
           <?php the_posts_pagination([
-              'prev_text' => '← Anterior',
-              'next_text' => 'Siguiente →',
-              'class' => 'text-sm'
+            'prev_text' => '← Anterior',
+            'next_text' => 'Siguiente →',
+            'class' => 'text-sm'
           ]); ?>
         </div>
 
@@ -77,7 +74,7 @@
 
     </div>
 
-     <?php get_sidebar(); ?>
+    <?php get_sidebar(); ?>
 
   </div>
 
