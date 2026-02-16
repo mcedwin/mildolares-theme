@@ -35,7 +35,9 @@
           <!-- Imagen -->
           <div>
             <?php if (has_post_thumbnail()) : ?>
-              <?php the_post_thumbnail('medium', ['class' => 'rounded-xl w-full']); ?>
+              <a href="<?php the_permalink(); ?>">
+                <?php the_post_thumbnail('medium', ['class' => 'rounded-xl w-full']); ?>
+              </a>
             <?php endif; ?>
           </div>
 
@@ -47,8 +49,8 @@
             </div> -->
 
             <div class="leading-snug text-gray-700">
-    <?php the_excerpt(); ?>
-</div>
+              <?php the_excerpt(); ?>
+            </div>
 
             <div class="mt-6">
               <a href="<?php the_permalink(); ?>"
@@ -70,14 +72,18 @@
               <a href="<?php the_permalink(); ?>">
 
                 <?php if (has_post_thumbnail()) : ?>
-                  <div class="mb-4">
-                    <?php the_post_thumbnail('thumbnail', ['class' => 'rounded-lg w-full']); ?>
+                  <div class="mb-2">
+                    <a href="<?php the_permalink(); ?>">
+                      <?php the_post_thumbnail('thumbnail', ['class' => 'rounded-lg w-full']); ?>
+                    </a>
                   </div>
                 <?php endif; ?>
 
-                <h3 class="text-xl font-semibold mb-2 hover:underline">
+                 <h2 class="text-2xl font-semibold mb-3">
+                <a href="<?php the_permalink(); ?>" class="hover:underline">
                   <?php the_title(); ?>
-                </h3>
+                </a>
+              </h2>
 
               </a>
 
@@ -86,8 +92,8 @@
               </div> -->
 
               <div class="leading-snug text-gray-700">
-    <?php the_excerpt(); ?>
-</div>
+                <?php the_excerpt(); ?>
+              </div>
 
 
             </article>

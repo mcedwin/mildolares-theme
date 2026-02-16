@@ -32,8 +32,10 @@
 
             <article>
               <?php if (has_post_thumbnail()) : ?>
-                <div class="mb-5">
-                  <?php the_post_thumbnail('thumbnail', ['class' => 'rounded-lg w-full']); ?>
+                <div class="mb-2">
+                  <a href="<?php the_permalink(); ?>">
+                    <?php the_post_thumbnail('thumbnail', ['class' => 'rounded-lg w-full']); ?>
+                  </a>
                 </div>
               <?php endif; ?>
               <h2 class="text-2xl font-semibold mb-3">
