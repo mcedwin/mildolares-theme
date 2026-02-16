@@ -41,6 +41,7 @@
     prose-ul:my-3
     prose-li:my-1
     [&>h2]:text-emerald-700
+    [&>h3]:text-emerald-700
 ">
 
             <?php the_content(); ?>
