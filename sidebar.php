@@ -28,7 +28,9 @@
     <p class="text-xs text-gray-500 mt-3">
         Progreso actual: <?php echo round($porcentaje); ?>%
     </p>
-
+  <p class="text-xs text-gray-500 mt-3">
+         Estoy documentando públicamente cómo construyo un sitio que genere $1000/mes. Sin humo. Sin cursos. Datos reales.
+      </p>
 </div>
 
     <!-- 🔥 Más Leídos -->

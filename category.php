@@ -60,14 +60,8 @@
 
         </div>
 
-        <!-- Paginación -->
-        <div class="mt-16">
-          <?php the_posts_pagination([
-            'prev_text' => '← Anterior',
-            'next_text' => 'Siguiente →',
-            'class' => 'text-sm'
-          ]); ?>
-        </div>
+        <!-- PAGINADOR -->
+        <?php mildolares_paginador(); ?>
 
       <?php else : ?>
 
