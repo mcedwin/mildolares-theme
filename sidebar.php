@@ -7,6 +7,20 @@
       <?php get_search_form(); ?>
     </div>
 
+    <div class="flex flex-col items-center">
+      <h3 class="mb-4 font-semibold text-gray-800">
+        🎯 Camino a $1000 mensuales
+      </h3>
+      <div class="relative w-16 h-32 bg-gray-200 rounded-full overflow-hidden">
+        <div
+          id="thermoFill"
+          class="absolute bottom-0 w-full bg-cyan-500 transition-all duration-1000"
+          style="height: 1%;">
+        </div>
+      </div>
+      <p class="mt-3 font-bold text-lg">$10.00</p>
+    </div>
+
     <!-- Categorías -->
     <div>
       <h3 class="font-semibold mb-4 border-b pb-2">
