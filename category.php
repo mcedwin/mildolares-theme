@@ -19,10 +19,10 @@
 
   </header>
 
-  <div class="grid grid-cols-1 md:grid-cols-4 gap-12">
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
 
     <!-- COLUMNA PRINCIPAL -->
-    <div class="md:col-span-3">
+    <div class="md:col-span-2">
 
       <?php if (have_posts()) : ?>
 
