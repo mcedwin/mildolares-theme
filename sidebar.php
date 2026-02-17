@@ -5,7 +5,7 @@
 <div class="bg-white border rounded-xl p-6 shadow-sm">
 
     <h3 class="text-lg font-semibold mb-3 border-b pb-2">
-        🚀 Camino a $1000 USD/mes
+        🚀 Camino a $1000 USD
     </h3>
 
     <?php
@@ -29,7 +29,7 @@
         Progreso actual: <?php echo round($porcentaje); ?>%
     </p>
   <p class="text-xs text-gray-500 mt-3">
-         Estoy documentando públicamente cómo construyo un sitio que genere $1000/mes. Sin humo. Sin cursos. Datos reales.
+         Estoy documentando públicamente cómo construyo un sitio que genere $1000. Sin humo. Sin cursos. Datos reales.
       </p>
 </div>
 
