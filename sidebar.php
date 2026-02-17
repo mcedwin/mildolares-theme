@@ -10,7 +10,7 @@
 
     <?php
         $meta = 1000;
-        $actual = 10; // Cambia este valor manualmente
+        $actual = 0; // Cambia este valor manualmente
         $porcentaje = ($actual / $meta) * 100;
     ?>
 
