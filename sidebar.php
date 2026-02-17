@@ -62,11 +62,11 @@
         <div class="text-sm space-y-2">
             <div class="flex justify-between">
                 <span>Compra</span>
-                <span class="font-semibold">S/ 3.75</span>
+                <span class="font-semibold">S/ 3.344</span>
             </div>
             <div class="flex justify-between">
                 <span>Venta</span>
-                <span class="font-semibold">S/ 3.78</span>
+                <span class="font-semibold">S/ 3.356</span>
             </div>
             <p class="text-xs text-gray-500 mt-2">
                 Actualizado diariamente
