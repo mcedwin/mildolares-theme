@@ -1,58 +1,123 @@
-<aside class="md:col-span-1">
+<aside class="md:col-span-1 space-y-5">
 
-  <div class="sticky top-12 space-y-12 text-sm">
 
-    <!-- Buscador -->
-    <div>
-      <?php get_search_form(); ?>
+<!-- 🚀 Mi Meta $1000 -->
+<div class="bg-white border rounded-xl p-6 shadow-sm">
+
+    <h3 class="text-lg font-semibold mb-3 border-b pb-2">
+        🚀 Camino a $1000 USD/mes
+    </h3>
+
+    <?php
+        $meta = 1000;
+        $actual = 10; // Cambia este valor manualmente
+        $porcentaje = ($actual / $meta) * 100;
+    ?>
+
+    <div class="mb-2 text-sm">
+        <span class="font-semibold">$<?php echo $actual; ?></span>
+        de $<?php echo $meta; ?>
     </div>
 
-    <div class="flex flex-col items-center">
-      <h3 class="mb-4 font-semibold text-gray-800">
-        🎯 Camino a $1000 mensuales
-      </h3>
-      <div class="relative w-16 h-32 bg-gray-200 rounded-full overflow-hidden">
-        <div
-          id="thermoFill"
-          class="absolute bottom-0 w-full bg-cyan-500 transition-all duration-1000"
-          style="height: 1%;">
+    <div class="w-full bg-gray-200 rounded-full h-4">
+        <div class="bg-green-800 h-4 rounded-full transition-all duration-500"
+             style="width: <?php echo $porcentaje; ?>%">
         </div>
-      </div>
-      <p class="mt-3 font-bold text-lg">$10.00</p>
     </div>
 
-    <!-- Categorías -->
-    <div>
-      <h3 class="font-semibold mb-4 border-b pb-2">
-        Categorías
-      </h3>
-      <ul class="space-y-2">
-        <?php wp_list_categories(['title_li' => '']); ?>
-      </ul>
+    <p class="text-xs text-gray-500 mt-3">
+        Progreso actual: <?php echo round($porcentaje); ?>%
+    </p>
+
+</div>
+
+    <!-- 🔥 Más Leídos -->
+    <div class="bg-white border rounded-xl p-6 shadow-sm">
+        <h3 class="text-lg font-semibold mb-4 border-b pb-2">
+            🔥 Más Leídos
+        </h3>
+        <ul class="space-y-3 text-sm">
+            <?php
+            $popular = new WP_Query(array(
+                'posts_per_page' => 5,
+                'meta_key' => 'post_views_count',
+                'orderby' => 'meta_value_num',
+                'order' => 'DESC'
+            ));
+            while ($popular->have_posts()) : $popular->the_post(); ?>
+                <li>
+                    <a href="<?php the_permalink(); ?>" class="hover:text-green-700 transition">
+                        <?php the_title(); ?>
+                    </a>
+                </li>
+            <?php endwhile; wp_reset_postdata(); ?>
+        </ul>
     </div>
 
-    <!-- Últimas noticias -->
-    <div>
-      <h3 class="font-semibold mb-4 border-b pb-2">
-        Últimas noticias
-      </h3>
-      <ul class="space-y-3">
-        <?php
-        $recent = new WP_Query([
-          'posts_per_page' => 5,
-          'post__not_in' => [get_the_ID()]
-        ]);
-        while ($recent->have_posts()) : $recent->the_post(); ?>
-          <li>
-            <a href="<?php the_permalink(); ?>" class="hover:underline">
-              <?php the_title(); ?>
-            </a>
-          </li>
-        <?php endwhile;
-        wp_reset_postdata(); ?>
-      </ul>
+    <!-- 💵 Tipo de Cambio -->
+    <div class="bg-white border rounded-xl p-6 shadow-sm">
+        <h3 class="text-lg font-semibold mb-4 border-b pb-2">
+            💵 Tipo de Cambio Hoy
+        </h3>
+        <div class="text-sm space-y-2">
+            <div class="flex justify-between">
+                <span>Compra</span>
+                <span class="font-semibold">S/ 3.75</span>
+            </div>
+            <div class="flex justify-between">
+                <span>Venta</span>
+                <span class="font-semibold">S/ 3.78</span>
+            </div>
+            <p class="text-xs text-gray-500 mt-2">
+                Actualizado diariamente
+            </p>
+        </div>
     </div>
 
-  </div>
+    <!-- 🧮 Calculadora Simple -->
+    <div class="bg-white border rounded-xl p-6 shadow-sm">
+        <h3 class="text-lg font-semibold mb-4 border-b pb-2">
+            🧮 Calculadora de Interés
+        </h3>
+        <input type="number" id="capital" placeholder="Capital"
+            class="w-full border rounded-md p-2 mb-3 text-sm">
+        <input type="number" id="tasa" placeholder="Tasa %"
+            class="w-full border rounded-md p-2 mb-3 text-sm">
+        <button onclick="calcular()"
+            class="w-full bg-green-800 text-white py-2 rounded-md text-sm hover:bg-green-900 transition">
+            Calcular
+        </button>
+        <p id="resultado" class="text-sm mt-3 font-semibold"></p>
+    </div>
+
+    <!-- 📂 Categorías -->
+    <div class="bg-white border rounded-xl p-6 shadow-sm">
+        <h3 class="text-lg font-semibold mb-4 border-b pb-2">
+            📂 Categorías
+        </h3>
+        <ul class="space-y-2 text-sm">
+            <?php
+            wp_list_categories(array(
+                'title_li' => '',
+                'orderby' => 'count',
+                'order' => 'DESC',
+                'number' => 5
+            ));
+            ?>
+        </ul>
+    </div>
 
 </aside>
+
+<script>
+function calcular() {
+    let capital = parseFloat(document.getElementById('capital').value);
+    let tasa = parseFloat(document.getElementById('tasa').value);
+
+    if (!capital || !tasa) return;
+
+    let interes = capital * (tasa / 100);
+    document.getElementById('resultado').innerText =
+        "Interés estimado: S/ " + interes.toFixed(2);
+}
+</script>
