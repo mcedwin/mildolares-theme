@@ -5,7 +5,7 @@
 <div class="bg-white border rounded-xl p-6 shadow-sm">
 
     <h3 class="text-lg font-semibold mb-3 border-b pb-2">
-        🚀 Camino a $1000 USD
+        🚀 Camino a $1000 USD/mes
     </h3>
 
     <?php
@@ -29,8 +29,64 @@
         Progreso actual: <?php echo round($porcentaje); ?>%
     </p>
   <p class="text-xs text-gray-500 mt-3">
-         Estoy documentando públicamente cómo construyo un sitio que genere $1000. Sin humo. Sin cursos. Datos reales.
+         Estoy documentando públicamente cómo construyo un sitio que genere $1000/mes. Sin humo. Sin cursos. Datos reales.
       </p>
+</div>
+
+<!-- 🧭 Etapas del Proyecto -->
+<!-- 🧭 Roadmap hacia $1000 -->
+<div class="bg-white border rounded-xl p-6 shadow-sm mt-6">
+
+<?php
+$meta = 1000;
+$actual = 10; // cambia este valor
+$porcentaje = ($actual / $meta) * 100;
+
+function etapaEstado($min, $max, $porcentaje) {
+    if ($porcentaje >= $max) return 'completado';
+    if ($porcentaje >= $min && $porcentaje < $max) return 'actual';
+    return 'pendiente';
+}
+?>
+
+<h3 class="text-lg font-semibold mb-4 border-b pb-2">
+🧭 Etapas hacia $1000
+</h3>
+
+<ul class="space-y-4 text-sm">
+
+<?php
+$etapas = [
+    ["Fundamentos", "Generación de contenido y diseño", 0, 5],
+    ["Validación", "Primer tráfico y primeros ingresos", 5, 15],
+    ["Optimización", "Afiliados y mejora de RPM", 15, 40],
+    ["Escalamiento", "Producto digital y captación leads", 40, 70],
+    ["Meta $1000", "Monetización consolidada", 70, 101],
+];
+
+foreach ($etapas as $e) {
+    $estado = etapaEstado($e[2], $e[3], $porcentaje);
+
+    if ($estado == 'completado') {
+        echo '<li class="flex items-start text-green-700">
+                <span class="mr-2">✔</span>
+                <div><strong>'.$e[0].'</strong><br>'.$e[1].'</div>
+              </li>';
+    } elseif ($estado == 'actual') {
+        echo '<li class="flex items-start font-semibold text-black">
+                <span class="mr-2">🟢</span>
+                <div><strong>'.$e[0].'</strong><br>'.$e[1].'</div>
+              </li>';
+    } else {
+        echo '<li class="flex items-start text-gray-400">
+                <span class="mr-2">🔒</span>
+                <div><strong>'.$e[0].'</strong><br>'.$e[1].'</div>
+              </li>';
+    }
+}
+?>
+
+</ul>
 </div>
 
     <!-- 🔥 Más Leídos -->
