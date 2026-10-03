@@ -53,13 +53,25 @@ class MIL_AI_Images {
 	}
 
 	public static function query_for_post( $post_id ) {
+		$queries = self::queries_for_post( $post_id );
+
+		return $queries ? $queries[0] : '';
+	}
+
+	/**
+	 * Busquedas alternativas, de la mas especifica a la mas amplia.
+	 * Openverse y Commons exigen todos los terminos, asi que una sola
+	 * consulta larga casi siempre da 0 resultados.
+	 */
+	public static function queries_for_post( $post_id ) {
 		$post = get_post( $post_id );
 
 		if ( ! $post ) {
-			return '';
+			return array();
 		}
 
 		$terms = mil_post_terms( $post_id, 1 );
+		$cat   = $terms ? remove_accents( $terms[0]->name ) : '';
 		$words = preg_split( '/\s+/', remove_accents( wp_strip_all_tags( $post->post_title ) ) );
 
 		$keywords = array();
@@ -71,26 +83,37 @@ class MIL_AI_Images {
 				continue;
 			}
 
-			$keywords[] = $word;
+			if ( ! in_array( $word, $keywords, true ) ) {
+				$keywords[] = $word;
+			}
 
-			if ( count( $keywords ) >= 4 ) {
+			if ( count( $keywords ) >= 6 ) {
 				break;
 			}
 		}
 
-		$parts = array();
+		$queries = array();
 
-		if ( $terms ) {
-			$parts[] = remove_accents( $terms[0]->name );
-		}
+		$add = function ( $q ) use ( &$queries ) {
+			$q = trim( preg_replace( '/\s+/', ' ', (string) $q ) );
 
-		if ( $keywords ) {
-			$parts[] = implode( ' ', $keywords );
-		}
+			if ( '' !== $q && ! in_array( $q, $queries, true ) ) {
+				$queries[] = $q;
+			}
+		};
 
-		$query = trim( implode( ' ', $parts ) );
+		$kw1 = isset( $keywords[0] ) ? $keywords[0] : '';
+		$kw2 = isset( $keywords[1] ) ? $keywords[1] : '';
 
-		return $query ? $query : remove_accents( wp_strip_all_tags( $post->post_title ) );
+		$add( trim( $cat . ' ' . $kw1 ) );       // categoria + palabra clave
+		$add( trim( $kw1 . ' ' . $kw2 ) );       // dos palabras clave
+		$add( $kw1 );                            // palabra representativa sola
+		$add( $cat );                            // categoria sola
+		$add( $kw2 );                            // segunda palabra
+		$add( implode( ' ', $keywords ) );       // todas las palabras
+		$add( remove_accents( wp_strip_all_tags( $post->post_title ) ) ); // titulo completo
+
+		return $queries;
 	}
 
 	public static function search( $query, $page = 1 ) {
@@ -268,20 +291,35 @@ class MIL_AI_Images {
 			return new WP_Error( 'mil_images_skip', __( 'El post ya tiene imagen o no existe.', 'mil' ) );
 		}
 
-		$query = self::query_for_post( $post_id );
+		$queries = self::queries_for_post( $post_id );
 
-		if ( '' === $query ) {
+		if ( ! $queries ) {
 			return new WP_Error( 'mil_images_query', __( 'No se pudo construir la busqueda.', 'mil' ) );
 		}
 
-		$candidates = self::search( $query );
+		$candidates = array();
+		$query_used = '';
+		$tried      = array();
 
-		if ( is_wp_error( $candidates ) ) {
-			return $candidates;
+		foreach ( $queries as $query ) {
+			$tried[] = $query;
+
+			$result = self::search( $query );
+
+			if ( is_wp_error( $result ) || ! $result ) {
+				continue;
+			}
+
+			$candidates = $result;
+			$query_used = $query;
+			break;
 		}
 
 		if ( ! $candidates ) {
-			return new WP_Error( 'mil_images_empty', __( 'Sin resultados para: ', 'mil' ) . $query );
+			return new WP_Error(
+				'mil_images_empty',
+				__( 'Sin resultados para: ', 'mil' ) . implode( ' | ', array_slice( $tried, 0, 4 ) )
+			);
 		}
 
 		foreach ( $candidates as $candidate ) {
@@ -292,7 +330,7 @@ class MIL_AI_Images {
 
 				update_post_meta( (int) $attachment_id, '_mil_image_source', $candidate['provider'] );
 				update_post_meta( (int) $attachment_id, '_mil_image_attribution', $candidate['author'] . ' | ' . $candidate['license'] . ' | ' . $candidate['source'] );
-				update_post_meta( $post_id, '_mil_image_query', $query );
+				update_post_meta( $post_id, '_mil_image_query', $query_used );
 
 				return (int) $attachment_id;
 			}
