@@ -259,8 +259,7 @@ class MIL_AI_Admin {
 		$created = array();
 		$params  = $ctx['params'];
 
-		$params['publicar']   = '1';
-		$params['con_imagen'] = '';
+		$params['publicar'] = '1';
 
 		foreach ( $ideas_raw as $idea_raw ) {
 			if ( ! is_array( $idea_raw ) || empty( $idea_raw['titulo'] ) ) {
@@ -283,7 +282,20 @@ class MIL_AI_Admin {
 				continue;
 			}
 
-			$post_id = $ctx['gen']->save( $params, $article, $idea, 0 );
+			$attachment_id = 0;
+			$image_error   = '';
+
+			if ( ! empty( $params['con_imagen'] ) ) {
+				$image = $ctx['gen']->make_image( $params, $article );
+
+				if ( is_wp_error( $image ) ) {
+					$image_error = $image->get_error_message();
+				} else {
+					$attachment_id = (int) $image;
+				}
+			}
+
+			$post_id = $ctx['gen']->save( $params, $article, $idea, $attachment_id );
 
 			if ( is_wp_error( $post_id ) ) {
 				continue;
@@ -293,6 +305,8 @@ class MIL_AI_Admin {
 				'postId'   => (int) $post_id,
 				'titulo'   => $article['titulo'],
 				'categoria' => implode( ', ', wp_list_pluck( get_the_category( $post_id ), 'name' ) ),
+				'imagen'   => $attachment_id,
+				'image_error' => $image_error,
 				'editUrl'  => get_edit_post_link( (int) $post_id, '' ),
 				'viewUrl'  => get_permalink( $post_id ),
 				'status'   => 'publish',

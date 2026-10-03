@@ -254,19 +254,30 @@
 						var list = document.createElement( 'ul' );
 						list.className = 'mil-ai__faq';
 
-						created.forEach( function ( c ) {
-							var li = document.createElement( 'li' );
-							var a1 = document.createElement( 'a' );
-							a1.href = c.editUrl;
-							a1.textContent = c.titulo;
-							var a2 = document.createElement( 'a' );
-							a2.href = c.viewUrl;
-							a2.target = '_blank';
-							a2.rel = 'noopener';
-							a2.textContent = 'Ver';
-							li.appendChild( a1 );
-							li.appendChild( document.createTextNode( ' - ' ) );
-							li.appendChild( a2 );
+					created.forEach( function ( c ) {
+						var li = document.createElement( 'li' );
+						var a = document.createElement( 'a' );
+						a.href = c.editUrl;
+						a.textContent = c.titulo;
+						var a2 = document.createElement( 'a' );
+						a2.href = c.viewUrl;
+						a2.target = '_blank';
+						a2.rel = 'noopener';
+						a2.textContent = 'Ver';
+						li.appendChild( a );
+
+						if ( c.categoria ) {
+							li.appendChild( document.createTextNode( ' [' + c.categoria + ']' ) );
+						}
+
+						if ( c.image_error ) {
+							li.appendChild( document.createTextNode( ' · imagen: ' + c.image_error ) );
+						} else if ( c.imagen ) {
+							li.appendChild( document.createTextNode( ' · con imagen de portada' ) );
+						}
+
+						li.appendChild( document.createTextNode( ' - ' ) );
+						li.appendChild( a2 );
 							list.appendChild( li );
 						} );
 
