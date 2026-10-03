@@ -119,6 +119,9 @@ class MIL_AI_Prompt {
 				'- "esqueleto": entre 4 y 7titulos H2 en orden logico.',
 				'- No repitas ninguno de los titulos ya publicados que se te proporcionen.',
 				'- Varia los formatos entre propuestas: guias paso a paso, comparativas, errores comunes, casos reales, listas, analisis, opinion argumentada.',
+				'- Analiza huecos tematicos (content gap) entre titulos y categorias: prioriza categorias con 0–3 publicaciones y temas no cubiertos.',
+				'- Evita duplicados exactos o semanticos muy cercanos. Propón ideas complementarias y preguntas no respondidas.',
+				'- Ordena por prioridad (huecos más evidentes primero). No solicites aclaraciones, devuelve propuestas inmediatas.',
 			)
 		);
 	}
