@@ -112,16 +112,15 @@ class MIL_AI_Prompt {
 				'Esquema exacto:',
 				'{"propuestas":[{"titulo":"","subtitulo":"","angulo":"","hook":"","keywords":[""],"categoria":"","nivel":"facil|medio|avanzado","razon":"","esqueleto":["h2","h2"]}]}',
 				'Reglas:',
-				'- "titulo": maximo 65 caracteres, claro, con la palabra clave principal de forma natural, sin mayusculas sostenidas ni signos de exclamacion.',
-				'- "angulo": una frase que explique desde que perspectiva trata el tema y por que resulta util.',
-				'- "hook": la promesa concreta que el lector obtiene (ej: "la lista de 7 pasos para...").',
-				'- "categoria": debe coincidir con una de las categorias existentes del sitio, elige la mas cercana.',
-				'- "esqueleto": entre 4 y 7titulos H2 en orden logico.',
-				'- No repitas ninguno de los titulos ya publicados que se te proporcionen.',
-				'- Varia los formatos entre propuestas: guias paso a paso, comparativas, errores comunes, casos reales, listas, analisis, opinion argumentada.',
-				'- Analiza huecos tematicos (content gap) entre titulos y categorias: prioriza categorias con 0–3 publicaciones y temas no cubiertos.',
-				'- Evita duplicados exactos o semanticos muy cercanos. Propón ideas complementarias y preguntas no respondidas.',
-				'- Ordena por prioridad (huecos más evidentes primero). No solicites aclaraciones, devuelve propuestas inmediatas.',
+				'- Escribe SIEMPRE en español (es-PE). Genera propuestas realistas para un sitio de finanzas, negocios o inversiones en Perú.',
+				'- "titulo": maximo 65 caracteres, claro, directo y accionable. Evita clickbaits exagerados ni mayusculas sostenidas.',
+				'- "angulo": 1 frase explicando por que es util ahora.',
+				'- "hook": promesa concreta que el lector obtiene.',
+				'- "categoria": debe coincidir con una categoria existente; elige la que mejor encaje. Si hay huecos, prioriza categorias con 0–3 publicaciones.',
+				'- "esqueleto": entre 4 y 6 titulos H2 logicos.',
+				'- NO repitas titulos ya publicados. Detecta solapamientos semanticos.',
+				'- Prioriza temas no cubiertos: dudas frecuentes, errores a evitar, comparativas practicas, calculos reales, decisiones del dia a dia.',
+				'- No pidas aclaraciones. Devuelve propuestas listas para aprobar y publicar.',
 			)
 		);
 	}
@@ -136,7 +135,7 @@ class MIL_AI_Prompt {
 		$parts[] = "PARAMETROS\n" . self::params_block( $p );
 
 		$parts[] = sprintf(
-			"TAREA\nPropón exactamente %d articulos sobre \"%s\". Cada propuesta debe ser distinta de las demas en formato y enfoque. Realiza un analisis de huecos tematicos (content gap) basandote en los titulos ya publicados y la cobertura por categoria: prioriza categorias con 0–3 publicaciones, evita duplicados exactos o muy cercanos, cubre preguntas no respondidas y sugiere ideas complementarias. No pidas confirmacion, devuelve propuestas listas para redactar.",
+			"TAREA\nPropón exactamente %d articulos sobre \"%s\". Cada propuesta debe cubrir un hueco tematico real segun titulos ya publicados y cobertura por categoria. No repitas, prioriza categorias con 0–3 publicaciones. Devuelve solo propuestas aptas para aprobar y publicar.",
 			max( 1, min( 12, (int) $p['cantidad'] ) ),
 			$p['tema']
 		);

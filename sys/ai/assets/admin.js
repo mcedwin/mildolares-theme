@@ -1,4 +1,4 @@
-( function () {
+﻿( function () {
 	'use strict';
 
 	var CFG = window.MIL_AI || {};
@@ -10,7 +10,8 @@
 	}
 
 	var ideasBox = document.getElementById( 'mil-ai-ideas' );
-	var writeBtn = document.getElementById( 'mil-ai-write' );
+		var writeBtn = document.getElementById( 'mil-ai-write' );
+		var approveBtn = document.getElementById( 'mil-ai-approve' );
 	var proposeBtn = document.getElementById( 'mil-ai-propose' );
 	var selectAllBtn = document.getElementById( 'mil-ai-select-all' );
 	var resultsSection = document.getElementById( 'mil-ai-results' );
@@ -131,10 +132,11 @@
 		} );
 	}
 
-	function syncWriteState() {
-		var any = selectedIdeas().length > 0 && 0 === pending;
-		writeBtn.disabled = ! any;
-	}
+		function syncWriteState() {
+			var any = selectedIdeas().length > 0 && 0 === pending;
+			writeBtn.disabled = ! any;
+			if (approveBtn) { approveBtn.disabled = ! any; }
+		}
 
 	function renderIdeas() {
 		ideasBox.innerHTML = '';
@@ -224,42 +226,47 @@
 		renderIdeas();
 	} );
 
-	writeBtn.addEventListener( 'click', function () {
-		var queue = selectedIdeas().slice( 0, 10 );
+	approveBtn.addEventListener( 'click', function () {
+		var queue = selectedIdeas().slice( 0, 12 );
 
 		if ( ! queue.length ) {
-			notice( document.querySelector( '.mil-ai__panel--ideas' ), t( 'selecciona', 'Selecciona al menos una propuesta.' ), 'error' );
+			notice( document.querySelector( ".mil-ai__panel--ideas" ), t( "selecciona", "Selecciona al menos una propuesta." ), "error" );
 			return;
 		}
 
 		var params = serialize();
 		resultsSection.hidden = false;
 		clearNotices( articlesBox );
-		busy( writeBtn, spinnerWrite, t( 'generando', 'Generando...' ) );
-
+		busy( approveBtn, spinnerWrite, "Aprobando y publicando..." );
 		pending = queue.length;
 
-		function next( index ) {
-			if ( index >= queue.length ) {
+		request( "mil_ai_approve", { params: params, ideas: queue } )
+			.then( function ( data ) {
+				var wrap = document.createElement( "div" );
+				wrap.className = "mil-ai__msg mil-ai__msg--ok";
+				wrap.textContent = "Articulos creados y publicados: " + ( data.created ? data.created.length : 0 );
+				articlesBox.appendChild( wrap );
+
+				if ( data.created && data.created.length ) {
+					var list = document.createElement( "ul" );
+					list.className = "mil-ai__faq";
+					data.created.forEach( function ( c ) {
+						var li = document.createElement( "li" );
+						li.innerHTML = "<a href='" + esc( c.editUrl ) + "'>" + esc( c.titulo ) + "</a> - <a href='" + esc( c.viewUrl ) + "' target='_blank' rel='noopener'>Ver</a>";
+						list.appendChild( li );
+					} );
+					articlesBox.appendChild( list );
+				}
+				resultsSection.scrollIntoView( { behavior: "smooth", block: "start" } );
+			} )
+			.catch( function ( err ) {
+				notice( articlesBox, err.message, "error" );
+			} )
+			.finally( function () {
 				pending = 0;
-				idle( writeBtn, spinnerWrite );
-				resultsSection.scrollIntoView( { behavior: 'smooth', block: 'start' } );
-				return;
-			}
-
-			var slot = createSlot( queue[ index ] );
-
-			request( 'mil_ai_write', { params: params, idea: queue[ index ] } )
-				.then( function ( data ) {
-					fillSlot( slot, data );
-				} )
-				.catch( function ( err ) {
-					slot.body.innerHTML = '';
-					notice( slot.body, err.message, 'error' );
-				} )
-				.finally( function () {
-					next( index + 1 );
-				} );
+				idle( approveBtn, spinnerWrite );
+			} );
+	} );
 		}
 
 		next( 0 );
@@ -354,7 +361,7 @@
 		} );
 
 		var saveBtn = slot.body.querySelector( '[data-role="save-btn"]' );
-		var saveSpinner = slot.body.querySelector( '[data-role="save-spinner]' );
+		var saveSpinner = slot.body.querySelector( '[data-role="save-spinner"]' );
 		var saveLabel = saveBtn.textContent;
 
 		saveBtn.addEventListener( 'click', function () {
@@ -406,3 +413,5 @@
 		slot.root.setAttribute( 'data-payload-id', payloadId );
 	}
 } )();
+
+

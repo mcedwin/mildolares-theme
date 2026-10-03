@@ -201,36 +201,36 @@ $mil_ai_tamanos = array(
 
 				<div class="mil-ai__checks">
 					<label><input type="checkbox" name="usar_contexto" value="1" checked> <?php esc_html_e( 'Usar contexto del sitio (titulos ya publicados y categorias, para no repetir)', 'mil' ); ?></label>
-					<label><input type="checkbox" name="con_imagen" value="1" checked> <?php esc_html_e( 'Generar imagen de portada con IA', 'mil' ); ?></label>
+					<label><input type="checkbox" name="con_imagen" value="1"> <?php esc_html_e( 'Generar imagen de portada con IA', 'mil' ); ?></label>
 					<label><input type="checkbox" name="sobrescribir_tags" value="1"> <?php esc_html_e( 'Usar las palabras clave del articulo como etiquetas, ignora las de la propuesta', 'mil' ); ?></label>
 					<label><input type="checkbox" name="publicar" value="1"> <?php esc_html_e( 'Publicar directamente (si lo dejo sin marcar, se guarda como borrador)', 'mil' ); ?></label>
 				</div>
 
 				<div class="mil-ai__actions">
-					<button type="button" class="button button-primary mil-ai__btn" id="mil-ai-propose">
-						<?php esc_html_e( 'Proponer articulos', 'mil' ); ?>
-					</button>
-					<span class="mil-ai__spinner" id="mil-ai-spinner-propose" hidden></span>
-				</div>
-			</form>
-		</section>
-
-		<section class="mil-ai__panel mil-ai__panel--ideas">
-			<h2 class="mil-ai__panel-title">2. <?php esc_html_e( 'Propuestas', 'mil' ); ?></h2>
-			<p class="mil-ai__hint"><?php esc_html_e( 'Marca una o varias y pulsa Redactar. Puedes editar el contenido antes de guardar.', 'mil' ); ?></p>
-
-			<div id="mil-ai-ideas" class="mil-ai__ideas">
-				<p class="mil-ai__empty"><?php esc_html_e( 'Aun no hay propuestas.', 'mil' ); ?></p>
-			</div>
-
-			<div class="mil-ai__actions">
-				<button type="button" class="button button-primary mil-ai__btn" id="mil-ai-write" disabled>
-					<?php esc_html_e( 'Redactar seleccionados', 'mil' ); ?>
+				<button type="button" class="button button-primary mil-ai__btn" id="mil-ai-propose">
+					<?php esc_html_e( 'Proponer articulos', 'mil' ); ?>
 				</button>
-				<button type="button" class="button mil-ai__btn" id="mil-ai-select-all"><?php esc_html_e( 'Marcar / desmarcar todo', 'mil' ); ?></button>
-				<span class="mil-ai__spinner" id="mil-ai-spinner-write" hidden></span>
+				<span class="mil-ai__spinner" id="mil-ai-spinner-propose" hidden></span>
 			</div>
-		</section>
+		</form>
+	</section>
+
+	<section class="mil-ai__panel mil-ai__panel--ideas">
+		<h2 class="mil-ai__panel-title">2. <?php esc_html_e( 'Propuestas', 'mil' ); ?></h2>
+		<p class="mil-ai__hint"><?php esc_html_e( 'Selecciona los titulos a aprobar. Al aprobarlos se generaran y publicaran automaticamente.', 'mil' ); ?></p>
+
+		<div id="mil-ai-ideas" class="mil-ai__ideas">
+			<p class="mil-ai__empty"><?php esc_html_e( 'Aun no hay propuestas.', 'mil' ); ?></p>
+		</div>
+
+		<div class="mil-ai__actions">
+			<button type="button" class="button button-primary mil-ai__btn" id="mil-ai-approve" disabled>
+				<?php esc_html_e( 'Aprobar y publicar seleccionados', 'mil' ); ?>
+			</button>
+			<button type="button" class="button mil-ai__btn" id="mil-ai-select-all"><?php esc_html_e( 'Marcar / desmarcar todo', 'mil' ); ?></button>
+			<span class="mil-ai__spinner" id="mil-ai-spinner-write" hidden></span>
+		</div>
+	</section>
 	</div>
 
 	<section class="mil-ai__panel mil-ai__panel--results" id="mil-ai-results" hidden>

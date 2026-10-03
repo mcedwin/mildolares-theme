@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
@@ -27,6 +27,7 @@ class MIL_AI_Admin {
 		add_action( 'wp_ajax_mil_ai_propose', array( $this, 'ajax_propose' ) );
 		add_action( 'wp_ajax_mil_ai_write', array( $this, 'ajax_write' ) );
 		add_action( 'wp_ajax_mil_ai_save', array( $this, 'ajax_save' ) );
+		add_action( 'wp_ajax_mil_ai_approve', array( $this, 'ajax_approve' ) );
 	}
 
 	public function menu() {
@@ -238,5 +239,66 @@ class MIL_AI_Admin {
 				'viewUrl' => get_permalink( $post_id ),
 			)
 		);
+	}
+	public function ajax_approve() {
+		$ctx = $this->guard();
+
+		$ideas_raw = isset( $_POST['ideas'] ) ? wp_unslash( $_POST['ideas'] ) : array();
+
+		if ( is_string( $ideas_raw ) ) {
+			$ideas_raw = json_decode( $ideas_raw, true );
+		}
+
+		if ( ! is_array( $ideas_raw ) || empty( $ideas_raw ) ) {
+			wp_send_json_error( array( 'message' => __( 'No hay titulos aprobados.', 'mil' ) ), 400 );
+		}
+
+		$created = array();
+		$params  = $ctx['params'];
+
+		$params['publicar']   = '1';
+		$params['con_imagen'] = '';
+
+		foreach ( $ideas_raw as $idea_raw ) {
+			if ( ! is_array( $idea_raw ) || empty( $idea_raw['titulo'] ) ) {
+				continue;
+			}
+
+			$idea = array(
+				'titulo'    => sanitize_text_field( $idea_raw['titulo'] ),
+				'subtitulo' => isset( $idea_raw['subtitulo'] ) ? sanitize_text_field( $idea_raw['subtitulo'] ) : '',
+				'angulo'    => isset( $idea_raw['angulo'] ) ? sanitize_textarea_field( $idea_raw['angulo'] ) : '',
+				'hook'      => isset( $idea_raw['hook'] ) ? sanitize_textarea_field( $idea_raw['hook'] ) : '',
+				'keywords'  => isset( $idea_raw['keywords'] ) ? array_values( array_map( 'sanitize_text_field', (array) $idea_raw['keywords'] ) ) : array(),
+				'categoria' => isset( $idea_raw['categoria'] ) ? sanitize_text_field( $idea_raw['categoria'] ) : '',
+				'esqueleto' => isset( $idea_raw['esqueleto'] ) ? array_values( array_map( 'sanitize_text_field', (array) $idea_raw['esqueleto'] ) ) : array(),
+			);
+
+			$article = $ctx['gen']->write( $params, $idea );
+
+			if ( is_wp_error( $article ) ) {
+				continue;
+			}
+
+			$post_id = $ctx['gen']->save( $params, $article, $idea, 0 );
+
+			if ( is_wp_error( $post_id ) ) {
+				continue;
+			}
+
+			$created[] = array(
+				'postId'  => (int) $post_id,
+				'titulo'  => $article['titulo'],
+				'editUrl' => get_edit_post_link( (int) $post_id, '' ),
+				'viewUrl' => get_permalink( (int) $post_id ),
+				'status'  => 'publish',
+			);
+		}
+
+		if ( empty( $created ) ) {
+			wp_send_json_error( array( 'message' => __( 'No se pudo crear ningun articulo.', 'mil' ) ), 500 );
+		}
+
+		wp_send_json_success( array( 'created' => $created ) );
 	}
 }
