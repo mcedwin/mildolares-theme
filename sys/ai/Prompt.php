@@ -116,7 +116,7 @@ class MIL_AI_Prompt {
 				'- "titulo": maximo 65 caracteres, claro, directo y accionable. Evita clickbaits exagerados ni mayusculas sostenidas.',
 				'- "angulo": 1 frase explicando por que es util ahora.',
 				'- "hook": promesa concreta que el lector obtiene.',
-				'- "categoria": debe coincidir con una categoria existente; elige la que mejor encaje. Si hay huecos, prioriza categorias con 0–3 publicaciones.',
+				'- "categoria": obligatoria en cada propuesta. Usa una existente si encaja; si ninguna encaja, propone una nueva con nombre corto y claro (se creara al publicar). Prioriza categorias con 0–3 publicaciones.',
 				'- "esqueleto": entre 4 y 6 titulos H2 logicos.',
 				'- NO repitas titulos ya publicados. Detecta solapamientos semanticos.',
 				'- Prioriza temas no cubiertos: dudas frecuentes, errores a evitar, comparativas practicas, calculos reales, decisiones del dia a dia.',

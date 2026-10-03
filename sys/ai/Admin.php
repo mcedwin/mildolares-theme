@@ -290,11 +290,12 @@ class MIL_AI_Admin {
 			}
 
 			$created[] = array(
-				'postId'  => (int) $post_id,
-				'titulo'  => $article['titulo'],
-				'editUrl' => get_edit_post_link( (int) $post_id, '' ),
-				'viewUrl' => get_permalink( (int) $post_id ),
-				'status'  => 'publish',
+				'postId'   => (int) $post_id,
+				'titulo'   => $article['titulo'],
+				'categoria' => implode( ', ', wp_list_pluck( get_the_category( $post_id ), 'name' ) ),
+				'editUrl'  => get_edit_post_link( (int) $post_id, '' ),
+				'viewUrl'  => get_permalink( $post_id ),
+				'status'   => 'publish',
 			);
 		}
 

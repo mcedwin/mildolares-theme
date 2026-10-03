@@ -170,7 +170,7 @@
 					( idea.razon ? '<span class="mil-ai__idea-meta">' + esc( idea.razon ) + '</span>' : '' ) +
 					( outline ? '<span class="mil-ai__idea-meta"><strong>Esqueleto:</strong> ' + outline + '</span>' : '' ) +
 					'<span class="mil-ai__tags">' +
-						( idea.categoria ? '<span class="mil-ai__tag">' + esc( idea.categoria ) + '</span>' : '' ) +
+						( idea.categoria ? '<span class="mil-ai__tag' + ( idea.nueva ? ' mil-ai__tag--new' : '' ) + '">' + esc( idea.categoria ) + ( idea.nueva ? ' · nueva' : '' ) + '</span>' : '' ) +
 						( idea.nivel ? '<span class="mil-ai__tag">' + esc( idea.nivel ) + '</span>' : '' ) +
 						keywords +
 					'</span>' +
@@ -342,7 +342,7 @@
 
 							var link = document.createElement( 'a' );
 							link.href = r.editUrl || '#';
-							link.textContent = r.titulo;
+							link.textContent = r.titulo + ( r.categoria ? ' [' + r.categoria + ']' : '' );
 							li.appendChild( link );
 
 							var status = document.createElement( 'span' );

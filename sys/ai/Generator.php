@@ -94,6 +94,16 @@ class MIL_AI_Generator {
 				continue;
 			}
 
+			$categoria = isset( $item['categoria'] ) ? self::split_names( $item['categoria'] ) : array();
+
+			if ( ! $categoria ) {
+				$fallback = self::fallback_category();
+
+				if ( '' !== $fallback ) {
+					$categoria = array( $fallback );
+				}
+			}
+
 			$ideas[] = array(
 				'id'        => wp_generate_password( 8, false, false ),
 				'titulo'    => sanitize_text_field( $item['titulo'] ),
@@ -101,10 +111,11 @@ class MIL_AI_Generator {
 				'angulo'    => isset( $item['angulo'] ) ? sanitize_textarea_field( $item['angulo'] ) : '',
 				'hook'      => isset( $item['hook'] ) ? sanitize_textarea_field( $item['hook'] ) : '',
 				'keywords'  => isset( $item['keywords'] ) ? array_values( array_map( 'sanitize_text_field', (array) $item['keywords'] ) ) : array(),
-				'categoria' => isset( $item['categoria'] ) ? sanitize_text_field( $item['categoria'] ) : '',
+				'categoria' => implode( ', ', $categoria ),
 				'nivel'     => isset( $item['nivel'] ) ? sanitize_key( $item['nivel'] ) : 'medio',
 				'razon'     => isset( $item['razon'] ) ? sanitize_textarea_field( $item['razon'] ) : '',
 				'esqueleto' => isset( $item['esqueleto'] ) ? array_values( array_map( 'sanitize_text_field', (array) $item['esqueleto'] ) ) : array(),
+				'nueva'     => self::missing_terms( $categoria, 'category' ) ? 1 : 0,
 			);
 		}
 
@@ -287,24 +298,38 @@ class MIL_AI_Generator {
 		$tags = isset( $idea['keywords'] ) && is_array( $idea['keywords'] ) ? $idea['keywords'] : array();
 
 		if ( ! empty( $p['sobrescribir_tags'] ) || ! $tags ) {
-			$tags = $article['keywords'];
+			$tags = isset( $article['keywords'] ) ? (array) $article['keywords'] : array();
+		}
+
+		if ( ! $tags ) {
+			$tags = self::tags_from_title( $article['titulo'] );
+		}
+
+		if ( ! empty( $tags ) ) {
+			$tags = array_values( array_filter( array_map( 'sanitize_text_field', $tags ) ) );
 		}
 
 		if ( ! empty( $tags ) ) {
 			wp_set_post_terms( $post_id, $tags, 'post_tag', false );
 		}
 
-		$categories = array();
+		$names = self::split_names( isset( $idea['categoria'] ) ? $idea['categoria'] : '' );
+		$names = array_merge( $names, self::split_names( isset( $p['categorias'] ) ? $p['categorias'] : array() ) );
+		$names = array_values( array_unique( $names ) );
 
-		if ( ! empty( $idea['categoria'] ) ) {
-			$categories[] = $idea['categoria'];
+		if ( ! $names ) {
+			$fallback = self::fallback_category();
+
+			if ( '' !== $fallback ) {
+				$names = array( $fallback );
+			}
 		}
 
-		$categories = array_merge( $categories, (array) $p['categorias'] );
-		$categories = self::resolve_terms( $categories, 'category' );
+		$categories = self::resolve_terms( $names, 'category' );
 
 		if ( $categories ) {
 			wp_set_post_categories( $post_id, $categories, false );
+			update_post_meta( $post_id, '_mil_ai_categoria', wp_strip_all_tags( implode( ', ', $names ) ) );
 		}
 
 		update_post_meta( $post_id, '_mil_ai_generated', 1 );
@@ -356,6 +381,93 @@ class MIL_AI_Generator {
 		return $admins ? (int) $admins[0] : 0;
 	}
 
+	private static function split_names( $raw ) {
+		if ( is_array( $raw ) ) {
+			$raw = implode( ', ', array_map( 'strval', $raw ) );
+		}
+
+		$parts   = preg_split( '/[,;]+/', (string) $raw );
+		$cleaned = array();
+
+		foreach ( (array) $parts as $part ) {
+			$part = trim( (string) $part, " \t\n\r\0\x0B\"'" );
+
+			if ( '' === $part ) {
+				continue;
+			}
+
+			$part = sanitize_text_field( $part );
+
+			if ( '' !== $part && ! in_array( $part, $cleaned, true ) ) {
+				$cleaned[] = $part;
+			}
+		}
+
+		return $cleaned;
+	}
+
+	private static function find_term( $name, $taxonomy ) {
+		$term = get_term_by( 'name', $name, $taxonomy );
+
+		if ( ! $term ) {
+			$term = get_term_by( 'slug', sanitize_title( $name ), $taxonomy );
+		}
+
+		return $term ? $term : null;
+	}
+
+	private static function missing_terms( array $names, $taxonomy ) {
+		foreach ( $names as $name ) {
+			if ( ! self::find_term( $name, $taxonomy ) ) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	private static function fallback_category() {
+		$cats = get_categories(
+			array(
+				'hide_empty' => false,
+				'orderby'    => 'count',
+				'order'      => 'ASC',
+			)
+		);
+
+		if ( ! $cats ) {
+			return '';
+		}
+
+		$default = (int) get_option( 'default_category' );
+
+		foreach ( $cats as $cat ) {
+			if ( (int) $cat->term_id !== $default ) {
+				return $cat->name;
+			}
+		}
+
+		return $cats[0]->name;
+	}
+
+	private static function term_id_from_error( $error ) {
+		if ( ! is_wp_error( $error ) ) {
+			return 0;
+		}
+
+		$data = $error->get_error_data( 'term_exists' );
+
+		if ( is_array( $data ) && isset( $data['term_id'] ) ) {
+			return (int) $data['term_id'];
+		}
+
+		if ( is_object( $data ) && isset( $data->term_id ) ) {
+			return (int) $data->term_id;
+		}
+
+		return is_numeric( $data ) ? (int) $data : 0;
+	}
+
 	private static function resolve_terms( array $names, $taxonomy ) {
 		$ids = array();
 
@@ -366,21 +478,16 @@ class MIL_AI_Generator {
 				continue;
 			}
 
-			$term = get_term_by( 'name', $name, $taxonomy );
-
-			if ( ! $term ) {
-				$term = get_term_by( 'slug', sanitize_title( $name ), $taxonomy );
-			}
+			$term = self::find_term( $name, $taxonomy );
 
 			if ( ! $term ) {
 				$created = wp_insert_term( $name, $taxonomy );
 
 				if ( is_wp_error( $created ) ) {
-					$existing = $created->get_error_data( 'term_exists' );
+					$existing = self::term_id_from_error( $created );
 
-					if ( $existing ) {
-						$ids[] = (int) $existing;
-						continue;
+					if ( $existing > 0 ) {
+						$ids[] = $existing;
 					}
 
 					continue;
@@ -394,6 +501,36 @@ class MIL_AI_Generator {
 		}
 
 		return array_values( array_unique( array_filter( $ids ) ) );
+	}
+
+	private static function tags_from_title( $title ) {
+		$words = preg_split( '/\s+/', remove_accents( wp_strip_all_tags( (string) $title ) ) );
+
+		$skip = array(
+			'como', 'para', 'que', 'este', 'esta', 'estos', 'estas', 'mas', 'los',
+			'las', 'del', 'con', 'por', 'sin', 'todo', 'toda', 'muy', 'entre',
+			'sobre', 'hasta', 'desde', 'donde', 'cuando', 'puede', 'pueden', 'guia',
+		);
+
+		$tags = array();
+
+		foreach ( (array) $words as $word ) {
+			$word = strtolower( trim( (string) $word, " \t\n\r\0\x0B.,;:¿?¡!\"'()[]" ) );
+
+			if ( strlen( $word ) < 4 || in_array( $word, $skip, true ) ) {
+				continue;
+			}
+
+			if ( ! in_array( $word, $tags, true ) ) {
+				$tags[] = $word;
+			}
+
+			if ( count( $tags ) >= 5 ) {
+				break;
+			}
+		}
+
+		return $tags;
 	}
 
 	private static function log_history( array $entry ) {

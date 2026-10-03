@@ -286,6 +286,13 @@
 	color: #3c434a;
 }
 
+.mil-ai__tag--new {
+	background: #edf7ed;
+	border-color: #a7d5a7;
+	color: #1e6b34;
+	font-weight: 600;
+}
+
 .mil-ai__article {
 	border: 1px solid var(--mil-border);
 	border-radius: 6px;

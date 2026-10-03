@@ -713,7 +713,7 @@ add_filter('the_content', 'mil_add_heading_ids', 20);
 // Modulo MIL IA (redaccion asistida con OpenAI)
 // ---------------------------------------------------------------------------
 
-define('MIL_AI_VERSION', '1.1.0');
+define('MIL_AI_VERSION', '1.1.1');
 
 require_once get_template_directory() . '/sys/ai/Env.php';
 require_once get_template_directory() . '/sys/ai/OpenAI.php';
