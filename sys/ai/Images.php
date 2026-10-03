@@ -106,12 +106,12 @@ class MIL_AI_Images {
 	private static function openverse( $query, $page = 1 ) {
 		$url = add_query_arg(
 			array(
-				'q'         => rawurlencode( $query ),
-				'license'   => 'cc0,pdm',
-				'page_size' => 6,
-				'page'      => max( 1, (int) $page ),
-				'mature'    => 'false',
-				'format'    => 'json',
+				'q'            => rawurlencode( $query ),
+				'license_type' => 'commercial',
+				'page_size'    => 6,
+				'page'         => max( 1, (int) $page ),
+				'mature'       => 'false',
+				'format'       => 'json',
 			),
 			'https://api.openverse.org/v1/images/'
 		);
