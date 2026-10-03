@@ -29,12 +29,15 @@ class MIL_AI_Prompt {
 
 		if ( $cats ) {
 			$names = array();
+			$coverage = array();
 
 			foreach ( $cats as $cat ) {
-				$names[] = $cat->name . ' (' . $cat->count . ')';
+				$names[]   = $cat->name . ' (' . $cat->count . ')';
+				$coverage[] = $cat->name . ': ' . $cat->count . ' publicaciones';
 			}
 
 			$lines[] = 'Categorias existentes (nombre y numero de entradas): ' . implode( ', ', $names );
+			$lines[] = 'Cobertura por categoria (huecos sugeridos: priorizar las con 0–3 publicaciones): ' . implode( ', ', $coverage );
 		}
 
 		$recent = get_posts(
@@ -130,7 +133,7 @@ class MIL_AI_Prompt {
 		$parts[] = "PARAMETROS\n" . self::params_block( $p );
 
 		$parts[] = sprintf(
-			"TAREA\nPropón exactamente %d articulos sobre \"%s\". Cada propuesta debe ser distinta de las demas en formato y enfoque.",
+			"TAREA\nPropón exactamente %d articulos sobre \"%s\". Cada propuesta debe ser distinta de las demas en formato y enfoque. Realiza un analisis de huecos tematicos (content gap) basandote en los titulos ya publicados y la cobertura por categoria: prioriza categorias con 0–3 publicaciones, evita duplicados exactos o muy cercanos, cubre preguntas no respondidas y sugiere ideas complementarias. No pidas confirmacion, devuelve propuestas listas para redactar.",
 			max( 1, min( 12, (int) $p['cantidad'] ) ),
 			$p['tema']
 		);

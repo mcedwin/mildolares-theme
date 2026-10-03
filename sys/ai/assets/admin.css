@@ -6,7 +6,9 @@
 	--mil-ok: #00a32a;
 	--mil-warn: #dba617;
 	--mil-err: #d63638;
-	max-width: 1400px;
+	max-width: 1100px;
+	padding: 0 16px;
+	margin: 0 auto;
 }
 
 .mil-ai__title {
@@ -74,7 +76,7 @@
 
 .mil-ai__layout {
 	display: grid;
-	grid-template-columns: minmax(340px, 420px) minmax(0, 1fr);
+	grid-template-columns: minmax(320px, 380px) minmax(0, 1fr);
 	gap: 16px;
 	align-items: start;
 	margin-top: 16px;
