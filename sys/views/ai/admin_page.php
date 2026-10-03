@@ -90,9 +90,9 @@ $mil_ai_tamanos = array(
 			<span class="mil-ai__sep"></span>
 			<?php
 			if ( 'pexels' === $provider ) {
-				esc_html_e( 'Fuente: Pexels (clave en .env).', 'mil' );
+				esc_html_e( 'Fuente: Pexels (clave en .env); si falla, Openverse y Wikimedia Commons.', 'mil' );
 			} else {
-				esc_html_e( 'Fuente: Openverse (sin clave, licencias CC0/dominio público). Limitado a unas 100 consultas al día; para uso intenso añade MIL_PEXELS_API_KEY al .env.', 'mil' );
+				esc_html_e( 'Fuentes sin clave: Openverse y, si no hay resultados, Wikimedia Commons. Atribucion de la licencia guardada en cada imagen.', 'mil' );
 			}
 			?>
 		</p>

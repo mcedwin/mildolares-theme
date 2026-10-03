@@ -97,10 +97,20 @@ class MIL_AI_Images {
 		$pexels_key = MIL_Env::get( 'MIL_PEXELS_API_KEY' );
 
 		if ( '' !== $pexels_key ) {
-			return self::pexels( $pexels_key, $query );
+			$result = self::pexels( $pexels_key, $query );
+
+			if ( ! is_wp_error( $result ) && $result ) {
+				return $result;
+			}
 		}
 
-		return self::openverse( $query, $page );
+		$result = self::openverse( $query, $page );
+
+		if ( ! is_wp_error( $result ) && $result ) {
+			return $result;
+		}
+
+		return self::commons( $query );
 	}
 
 	private static function openverse( $query, $page = 1 ) {
@@ -190,6 +200,67 @@ class MIL_AI_Images {
 		return $out;
 	}
 
+	private static function commons( $query ) {
+		$url = add_query_arg(
+			array(
+				'action'     => 'query',
+				'generator'  => 'search',
+				'gsrsearch'  => rawurlencode( 'filetype:bitmap ' . $query ),
+				'gsrnamespace' => 6,
+				'gsrlimit'   => 6,
+				'prop'       => 'imageinfo',
+				'iiprop'     => 'url|extmetadata',
+				'iiurlwidth' => 1280,
+				'format'     => 'json',
+			),
+			'https://commons.wikimedia.org/w/api.php'
+		);
+
+		$response = wp_remote_get(
+			$url,
+			array(
+				'timeout' => 20,
+				'headers' => array( 'User-Agent' => 'MilDolares/1.0 (WordPress theme image fetcher)' ),
+			)
+		);
+
+		if ( is_wp_error( $response ) || 200 !== wp_remote_retrieve_response_code( $response ) ) {
+			return new WP_Error( 'mil_images_commons', __( 'Wikimedia Commons no respondio.', 'mil' ) );
+		}
+
+		$data = json_decode( wp_remote_retrieve_body( $response ), true );
+
+		$pages = isset( $data['query']['pages'] ) ? $data['query']['pages'] : array();
+		$out   = array();
+
+		foreach ( (array) $pages as $page_item ) {
+			if ( empty( $page_item['imageinfo'][0] ) ) {
+				continue;
+			}
+
+			$info   = $page_item['imageinfo'][0];
+			$src    = ! empty( $info['thumburl'] ) ? $info['thumburl'] : ( isset( $info['url'] ) ? $info['url'] : '' );
+			$meta   = isset( $info['extmetadata'] ) ? $info['extmetadata'] : array();
+			$author = isset( $meta['Artist']['value'] ) ? wp_strip_all_tags( $meta['Artist']['value'] ) : '';
+			$lic    = isset( $meta['LicenseShortName']['value'] ) ? wp_strip_all_tags( $meta['LicenseShortName']['value'] ) : '';
+
+			if ( ! $src ) {
+				continue;
+			}
+
+			$out[] = array(
+				'url'      => esc_url_raw( $src ),
+				'title'    => sanitize_text_field( isset( $page_item['title'] ) ? $page_item['title'] : '' ),
+				'provider' => 'commons',
+				'author'   => sanitize_text_field( $author ),
+				'license'  => sanitize_text_field( $lic ),
+				'source'   => isset( $info['descriptionurl'] ) ? esc_url_raw( $info['descriptionurl'] ) : '',
+			);
+		}
+
+		return $out;
+	}
+
 	public static function attach( $post_id ) {
 		$post_id = absint( $post_id );
 
@@ -233,7 +304,13 @@ class MIL_AI_Images {
 	private static function download( array $candidate, $title ) {
 		$url = $candidate['url'];
 
-		$response = wp_safe_remote_get( $url, array( 'timeout' => 30 ) );
+		$response = wp_safe_remote_get(
+			$url,
+			array(
+				'timeout' => 30,
+				'headers' => array( 'User-Agent' => 'MilDolares/1.0 (WordPress theme image fetcher)' ),
+			)
+		);
 
 		if ( is_wp_error( $response ) || 200 !== wp_remote_retrieve_response_code( $response ) ) {
 			return new WP_Error( 'mil_images_http', __( 'Fallo la descarga.', 'mil' ) );
