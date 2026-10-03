@@ -140,14 +140,9 @@
               $mil_related->the_post();
               ?>
               <article class="flex flex-col">
-                <?php if (has_post_thumbnail()) : ?>
-                  <a href="<?php the_permalink(); ?>" class="block mb-3" tabindex="-1" aria-hidden="true">
-                    <?php the_post_thumbnail('medium', array(
-                        'class' => 'rounded-lg w-full',
-                        'alt'   => mil_thumbnail_alt(),
-                    )); ?>
-                  </a>
-                <?php endif; ?>
+                <a href="<?php the_permalink(); ?>" class="block mb-3" tabindex="-1" aria-hidden="true">
+                  <?php echo mil_post_thumbnail('medium', 'rounded-lg w-full', 'aspect-[3/2]'); ?>
+                </a>
                 <h3 class="text-lg font-semibold leading-snug mb-2">
                   <a href="<?php the_permalink(); ?>" class="hover:text-green-900 hover:underline transition">
                     <?php the_title(); ?>

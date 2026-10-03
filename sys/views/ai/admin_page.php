@@ -76,6 +76,41 @@ $mil_ai_tamanos = array(
 		</div>
 	<?php endif; ?>
 
+	<section class="mil-ai__panel">
+		<h2 class="mil-ai__panel-title"><?php esc_html_e( 'Imágenes gratuitas para posts sin foto', 'mil' ); ?></h2>
+
+		<p class="mil-ai__hint">
+			<?php
+			printf(
+				/* translators: %s: number of posts without featured image */
+				esc_html__( 'Hay %s publicaciones sin imagen destacada. La herramienta busca una foto libre de derechos relacionada con el título y la categoría, y la asigna como portada.', 'mil' ),
+				'<strong>' . esc_html( (string) $missing ) . '</strong>'
+			);
+			?>
+			<span class="mil-ai__sep"></span>
+			<?php
+			if ( 'pexels' === $provider ) {
+				esc_html_e( 'Fuente: Pexels (clave en .env).', 'mil' );
+			} else {
+				esc_html_e( 'Fuente: Openverse (sin clave, licencias CC0/dominio público). Limitado a unas 100 consultas al día; para uso intenso añade MIL_PEXELS_API_KEY al .env.', 'mil' );
+			}
+			?>
+		</p>
+
+		<div class="mil-ai__actions">
+			<label class="mil-ai__field mil-ai__field--inline">
+				<span class="mil-ai__label"><?php esc_html_e( 'Posts a procesar', 'mil' ); ?></span>
+				<input type="number" id="mil-ai-images-limit" value="10" min="1" max="30">
+			</label>
+			<button type="button" class="button button-primary mil-ai__btn" id="mil-ai-autofill">
+				<?php esc_html_e( 'Asignar imágenes gratuitas', 'mil' ); ?>
+			</button>
+			<span class="mil-ai__spinner" id="mil-ai-spinner-images" hidden></span>
+		</div>
+
+		<div id="mil-ai-images-results" class="mil-ai__images"></div>
+	</section>
+
 	<div class="mil-ai__layout">
 
 		<section class="mil-ai__panel mil-ai__panel--params">

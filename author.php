@@ -29,11 +29,9 @@
 
           <article class="flex flex-col sm:flex-row gap-5 pb-8 border-b border-gray-100 last:border-0">
 
-            <?php if (has_post_thumbnail()) : ?>
-              <a href="<?php the_permalink(); ?>" class="block shrink-0 w-full sm:w-48" tabindex="-1" aria-hidden="true">
-                <?php the_post_thumbnail('medium', ['class' => 'rounded-lg w-full sm:h-32 object-cover', 'alt' => mil_thumbnail_alt(), 'loading' => 'lazy']); ?>
-              </a>
-            <?php endif; ?>
+            <a href="<?php the_permalink(); ?>" class="block shrink-0 w-full sm:w-48" tabindex="-1" aria-hidden="true">
+              <?php echo mil_post_thumbnail('medium', 'rounded-lg w-full', 'aspect-[3/2] sm:aspect-auto sm:h-32'); ?>
+            </a>
 
             <div class="flex-1 min-w-0">
               <div class="flex flex-wrap items-center gap-2 text-xs text-gray-500 mb-2">

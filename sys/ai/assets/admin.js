@@ -289,4 +289,78 @@
 				} );
 		} );
 	}
+	var autofillBtn = document.getElementById( 'mil-ai-autofill' );
+
+	if ( autofillBtn ) {
+		var autofillLimit = document.getElementById( 'mil-ai-images-limit' );
+		var autofillSpinner = document.getElementById( 'mil-ai-spinner-images' );
+		var autofillBox = document.getElementById( 'mil-ai-images-results' );
+
+		autofillBtn.addEventListener( 'click', function () {
+			var limit = autofillLimit ? parseInt( autofillLimit.value, 10 ) : 10;
+
+			if ( ! limit || limit < 1 ) {
+				limit = 10;
+			}
+
+			clearNotices( autofillBox );
+			autofillBox.innerHTML = '';
+			busy( autofillBtn, autofillSpinner, 'Buscando imagenes...' );
+
+			request( 'mil_ai_autofill', { limit: String( limit ) } )
+				.then( function ( data ) {
+					var results = data.results || [];
+					var ok = 0;
+
+					results.forEach( function ( r ) {
+						if ( r.ok ) {
+							ok++;
+						}
+					} );
+
+					notice(
+						autofillBox,
+						'Procesados ' + results.length + ' · asignadas ' + ok + ' · quedan ' + ( data.remaining || 0 ) + ' sin foto',
+						ok > 0 ? 'ok' : 'error'
+					);
+
+					if ( results.length ) {
+						var list = document.createElement( 'ul' );
+						list.className = 'mil-ai__faq';
+
+						results.forEach( function ( r ) {
+							var li = document.createElement( 'li' );
+							li.className = 'mil-ai__imgrow' + ( r.ok ? ' is-ok' : ' is-err' );
+
+							if ( r.ok && r.url ) {
+								var img = document.createElement( 'img' );
+								img.src = r.url;
+								img.alt = '';
+								img.loading = 'lazy';
+								li.appendChild( img );
+							}
+
+							var link = document.createElement( 'a' );
+							link.href = r.editUrl || '#';
+							link.textContent = r.titulo;
+							li.appendChild( link );
+
+							var status = document.createElement( 'span' );
+							status.textContent = r.ok ? ' ok' : ' ' + ( r.error || 'error' );
+							li.appendChild( status );
+
+							list.appendChild( li );
+						} );
+
+						autofillBox.appendChild( list );
+					}
+				} )
+				.catch( function ( err ) {
+					notice( autofillBox, err.message, 'error' );
+				} )
+				.finally( function () {
+					idle( autofillBtn, autofillSpinner );
+				} );
+		} );
+	}
 } )();

@@ -28,6 +28,7 @@ class MIL_AI_Admin {
 		add_action( 'wp_ajax_mil_ai_write', array( $this, 'ajax_write' ) );
 		add_action( 'wp_ajax_mil_ai_save', array( $this, 'ajax_save' ) );
 		add_action( 'wp_ajax_mil_ai_approve', array( $this, 'ajax_approve' ) );
+		add_action( 'wp_ajax_mil_ai_autofill', array( $this, 'ajax_autofill' ) );
 	}
 
 	public function menu() {
@@ -82,6 +83,8 @@ class MIL_AI_Admin {
 		$generator  = new MIL_AI_Generator( $ai );
 		$history    = MIL_AI_Generator::history();
 		$categories = get_categories( array( 'hide_empty' => false ) );
+		$missing    = MIL_AI_Images::missing_count();
+		$provider   = '' !== MIL_Env::get( 'MIL_PEXELS_API_KEY' ) ? 'pexels' : 'openverse';
 
 		include get_template_directory() . '/sys/views/ai/admin_page.php';
 	}
@@ -300,5 +303,56 @@ class MIL_AI_Admin {
 		}
 
 		wp_send_json_success( array( 'created' => $created ) );
+	}
+	public function ajax_autofill() {
+		check_ajax_referer( self::NONCE, 'nonce' );
+
+		if ( ! current_user_can( self::CAPABILITY ) ) {
+			wp_send_json_error( array( 'message' => __( 'Permisos insuficientes.', 'mil' ) ), 403 );
+		}
+
+		$limit = isset( $_POST['limit'] ) ? (int) $_POST['limit'] : 10;
+		$limit = max( 1, min( 30, $limit ) );
+
+		$post_ids = MIL_AI_Images::missing( $limit );
+
+		if ( ! $post_ids ) {
+			wp_send_json_success( array(
+				'processed' => 0,
+				'remaining' => MIL_AI_Images::missing_count(),
+				'results'   => array(),
+			) );
+		}
+
+		$results = array();
+
+		foreach ( $post_ids as $post_id ) {
+			$title = get_the_title( $post_id );
+			$image = MIL_AI_Images::attach( $post_id );
+
+			if ( is_wp_error( $image ) ) {
+				$results[] = array(
+					'postId' => (int) $post_id,
+					'titulo' => $title,
+					'ok'     => false,
+					'error'  => $image->get_error_message(),
+				);
+				continue;
+			}
+
+			$results[] = array(
+				'postId' => (int) $post_id,
+				'titulo' => $title,
+				'ok'     => true,
+				'url'    => wp_get_attachment_image_url( (int) $image, 'thumbnail' ),
+				'editUrl' => get_edit_post_link( (int) $post_id, '' ),
+			);
+		}
+
+		wp_send_json_success( array(
+			'processed' => count( $results ),
+			'remaining' => MIL_AI_Images::missing_count(),
+			'results'   => $results,
+		) );
 	}
 }

@@ -157,6 +157,34 @@ function mil_reading_time($post = null) {
     return max(1, (int) ceil($words / 200));
 }
 
+function mil_post_thumbnail($size = 'medium', $class = 'rounded-lg w-full', $ratio = 'aspect-[3/2]', $post_id = null, array $args = array()) {
+    $post_id = $post_id ? $post_id : get_the_ID();
+
+    if (has_post_thumbnail($post_id)) {
+        $defaults = array(
+            'class'   => $class . ' object-cover',
+            'alt'     => mil_thumbnail_alt($post_id),
+            'loading' => 'lazy',
+        );
+
+        return get_the_post_thumbnail($post_id, $size, array_merge($defaults, $args));
+    }
+
+    $terms = mil_post_terms($post_id, 1);
+    $label = $terms ? $terms[0]->name : get_bloginfo('name');
+
+    return sprintf(
+        '<div class="%1$s %2$s flex flex-col items-center justify-center gap-2 bg-gray-100 border border-gray-200 text-gray-400" role="img" aria-label="%3$s">' .
+        '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8 sm:w-10 sm:h-10" aria-hidden="true" focusable="false"><path stroke-linecap="round" stroke-linejoin="round" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" /></svg>' .
+        '<span class="text-[11px] uppercase tracking-wide font-semibold px-2 text-center">%4$s</span>' .
+        '</div>',
+        esc_attr($class),
+        esc_attr($ratio),
+        esc_attr(sprintf(__('Imagen no disponible: %s', 'mil'), get_the_title($post_id))),
+        esc_html($label)
+    );
+}
+
 function mil_thumbnail_alt($post_id = null) {
     $post_id = $post_id ? $post_id : get_the_ID();
     $alt     = get_post_meta($post_id, '_wp_attachment_image_alt', true);
@@ -691,6 +719,7 @@ require_once get_template_directory() . '/sys/ai/Env.php';
 require_once get_template_directory() . '/sys/ai/OpenAI.php';
 require_once get_template_directory() . '/sys/ai/Prompt.php';
 require_once get_template_directory() . '/sys/ai/Generator.php';
+require_once get_template_directory() . '/sys/ai/Images.php';
 require_once get_template_directory() . '/sys/ai/Admin.php';
 
 MIL_AI_Admin::instance();

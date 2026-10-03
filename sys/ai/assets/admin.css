@@ -405,3 +405,55 @@
 	border-left: 4px solid var(--mil-ok);
 	color: #1a5c22;
 }
+
+.mil-ai__field--inline {
+	flex-direction: row;
+	align-items: center;
+	gap: 8px;
+	margin-right: auto;
+}
+
+.mil-ai__field--inline input[type="number"] {
+	width: 90px;
+}
+
+.mil-ai__images {
+	margin-top: 12px;
+}
+
+.mil-ai__imgrow {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	margin-bottom: 6px;
+	font-size: 13px;
+}
+
+.mil-ai__imgrow img {
+	width: 56px;
+	height: 40px;
+	object-fit: cover;
+	border-radius: 4px;
+	border: 1px solid var(--mil-border);
+	flex: 0 0 auto;
+}
+
+.mil-ai__imgrow a {
+	flex: 1 1 auto;
+	min-width: 0;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	text-decoration: none;
+}
+
+.mil-ai__imgrow a:hover { text-decoration: underline; }
+
+.mil-ai__imgrow span {
+	flex: 0 0 auto;
+	font-size: 11px;
+	color: #646970;
+}
+
+.mil-ai__imgrow.is-ok span { color: var(--mil-ok); }
+.mil-ai__imgrow.is-err span { color: var(--mil-err); }

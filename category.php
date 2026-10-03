@@ -27,11 +27,9 @@
           <?php while (have_posts()) : the_post(); ?>
 
             <article class="flex flex-col">
-              <?php if (has_post_thumbnail()) : ?>
-                <a href="<?php the_permalink(); ?>" class="block mb-3" tabindex="-1" aria-hidden="true">
-                  <?php the_post_thumbnail('medium', ['class' => 'rounded-lg w-full', 'alt' => mil_thumbnail_alt(), 'loading' => 'lazy']); ?>
-                </a>
-              <?php endif; ?>
+              <a href="<?php the_permalink(); ?>" class="block mb-3" tabindex="-1" aria-hidden="true">
+                <?php echo mil_post_thumbnail('medium', 'rounded-lg w-full', 'aspect-[3/2]'); ?>
+              </a>
 
               <div class="flex items-center gap-2 text-xs text-gray-500 mb-2">
                 <?php mil_date_line(); ?>

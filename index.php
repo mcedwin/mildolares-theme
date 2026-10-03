@@ -26,11 +26,7 @@ $mil_link_destacado = $mil_destacado ? mil_first_term_link($mil_destacado->ID) :
 
         <a href="<?php echo esc_url(get_permalink($mil_destacado)); ?>" class="block" tabindex="-1" aria-hidden="true">
           <?php
-          echo get_the_post_thumbnail($mil_destacado->ID, 'large', array(
-              'class'   => 'rounded-xl w-full',
-              'alt'     => mil_thumbnail_alt($mil_destacado->ID),
-              'loading' => 'eager',
-          ));
+          echo mil_post_thumbnail('large', 'rounded-xl w-full', 'aspect-[3/2]', $mil_destacado->ID, array('loading' => 'eager'));
           ?>
         </a>
 
@@ -82,17 +78,9 @@ $mil_link_destacado = $mil_destacado ? mil_first_term_link($mil_destacado->ID) :
 
           <article class="flex flex-col">
 
-            <?php if (has_post_thumbnail()) : ?>
-              <a href="<?php the_permalink(); ?>" class="block mb-3" tabindex="-1" aria-hidden="true">
-                <?php
-                the_post_thumbnail('medium', array(
-                    'class'   => 'rounded-lg w-full',
-                    'alt'     => mil_thumbnail_alt(),
-                    'loading' => 'lazy',
-                ));
-                ?>
-              </a>
-            <?php endif; ?>
+            <a href="<?php the_permalink(); ?>" class="block mb-3" tabindex="-1" aria-hidden="true">
+              <?php echo mil_post_thumbnail('medium', 'rounded-lg w-full', 'aspect-[3/2]'); ?>
+            </a>
 
             <div class="flex flex-wrap items-center gap-2 text-xs text-gray-500 mb-2">
               <?php if ($mil_terms) : ?>
