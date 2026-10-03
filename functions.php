@@ -69,7 +69,7 @@ function mildolares_paginador($query = null) {
     }
 
     $total_pages  = (int) $query->max_num_pages;
-    $current_page = max(1, (int) get_query_var('paged'));
+    $current_page = max(1, (int) (get_query_var('paged') ? get_query_var('paged') : get_query_var('page')));
 
     if ($total_pages <= 1) return;
 

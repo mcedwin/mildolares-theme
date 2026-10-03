@@ -1,7 +1,7 @@
   </main>
 
   <footer class="mt-16 border-t border-gray-200 bg-gray-50">
-    <div class="mx-auto px-4 py-12 grid grid-cols-1 md:grid-cols-3 gap-10">
+    <div class="max-w-site mx-auto px-4 sm:px-6 py-12 grid grid-cols-1 md:grid-cols-3 gap-10">
 
       <div>
         <?php if (has_custom_logo()) {
@@ -54,7 +54,7 @@
     </div>
 
     <div class="border-t border-gray-200">
-      <div class="mx-auto px-4 py-6 flex flex-col sm:flex-row items-center justify-between gap-2 text-sm text-gray-500">
+      <div class="max-w-site mx-auto px-4 sm:px-6 py-6 flex flex-col sm:flex-row items-center justify-between gap-2 text-sm text-gray-500">
         <p>&copy; <?php echo esc_html(wp_date('Y')); ?> <?php bloginfo('name'); ?>. <?php esc_html_e('Todos los derechos reservados.', 'mil'); ?></p>
         <p><?php esc_html_e('Hecho con WordPress.', 'mil'); ?></p>
       </div>

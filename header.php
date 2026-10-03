@@ -14,7 +14,7 @@
 <?php wp_body_open(); ?>
 
 <header class="border-b">
-  <div class="mx-auto px-4 py-4 flex items-center justify-between gap-4">
+  <div class="max-w-site mx-auto px-4 sm:px-6 py-4 flex items-center justify-between gap-4">
 
     <!-- Logo -->
     <div class="flex items-center shrink-0">
@@ -57,12 +57,12 @@
   </div>
 
   <!-- Buscador móvil -->
-  <div class="md:hidden px-4 pb-3">
+  <div class="md:hidden max-w-site mx-auto px-4 sm:px-6 pb-3">
     <?php get_search_form(); ?>
   </div>
 
   <!-- Menú móvil -->
-  <div id="mobileMenu" class="hidden md:hidden px-4 pb-4 border-t border-gray-100">
+  <div id="mobileMenu" class="hidden md:hidden max-w-site mx-auto px-4 sm:px-6 pb-4 border-t border-gray-100">
     <nav aria-label="<?php esc_attr_e('Menú móvil', 'mil'); ?>">
       <?php
       wp_nav_menu([
@@ -76,4 +76,4 @@
   </div>
 </header>
 
-<main id="contenido" class="mx-auto px-4 py-10">
+<main id="contenido" class="max-w-site mx-auto px-4 sm:px-6 py-10">

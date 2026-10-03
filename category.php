@@ -1,9 +1,7 @@
 <?php get_header(); ?>
 
-<div class="max-w-site mx-auto px-6">
-
   <!-- Título de categoría -->
-  <header class="mb-5">
+  <header class="mb-6 pb-4 border-b border-gray-200">
 
     <h1 class="text-4xl font-bold mb-4">
       <?php single_cat_title(); ?>
@@ -15,8 +13,6 @@
       </div>
     <?php endif; ?>
 
-    <div class="border-t border-gray-200"></div>
-
   </header>
 
   <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
@@ -26,35 +22,33 @@
 
       <?php if (have_posts()) : ?>
 
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 align-center">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
 
           <?php while (have_posts()) : the_post(); ?>
 
-            <article>
+            <article class="flex flex-col">
               <?php if (has_post_thumbnail()) : ?>
-                <div class="mb-2">
-                  <a href="<?php the_permalink(); ?>">
-                    <?php the_post_thumbnail('thumbnail', ['class' => 'rounded-lg w-full']); ?>
-                  </a>
-                </div>
+                <a href="<?php the_permalink(); ?>" class="block mb-3" tabindex="-1" aria-hidden="true">
+                  <?php the_post_thumbnail('medium', ['class' => 'rounded-lg w-full', 'alt' => mil_thumbnail_alt(), 'loading' => 'lazy']); ?>
+                </a>
               <?php endif; ?>
-              <h2 class="text-2xl font-semibold mb-3">
-                <a href="<?php the_permalink(); ?>" class="hover:underline">
+
+              <div class="flex items-center gap-2 text-xs text-gray-500 mb-2">
+                <?php mil_date_line(); ?>
+                <span aria-hidden="true">&middot;</span>
+                <span><?php echo esc_html(mil_reading_time()); ?> <?php esc_html_e('min de lectura', 'mil'); ?></span>
+              </div>
+
+              <h2 class="text-lg font-semibold leading-snug mb-2">
+                <a href="<?php the_permalink(); ?>" class="hover:text-green-900 hover:underline transition">
                   <?php the_title(); ?>
                 </a>
               </h2>
 
-              <!-- <div class="text-sm text-gray-500 mb-4">
-                <?php the_time('F j, Y'); ?>
-              </div> -->
-
-              <div class="leading-snug text-gray-700">
-                <?php the_excerpt(); ?>
-              </div>
-
-
+              <p class="text-sm leading-snug text-gray-700 mt-auto">
+                <?php echo esc_html(wp_trim_words(wp_strip_all_tags(get_the_excerpt()), 25, '…')); ?>
+              </p>
             </article>
-
 
           <?php endwhile; ?>
 
@@ -65,7 +59,9 @@
 
       <?php else : ?>
 
-        <p>No hay artículos en esta categoría.</p>
+        <div class="text-center py-16 border border-dashed border-gray-300 rounded-xl bg-gray-50">
+          <p class="text-gray-600"><?php esc_html_e('No hay artículos en esta categoría.', 'mil'); ?></p>
+        </div>
 
       <?php endif; ?>
 
@@ -74,7 +70,5 @@
     <?php get_sidebar(); ?>
 
   </div>
-
-</div>
 
 <?php get_footer(); ?>

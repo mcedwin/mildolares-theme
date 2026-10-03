@@ -1,8 +1,6 @@
 <?php get_header(); ?>
 
-<div class="max-w-site mx-auto px-6">
-
-  <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
 
     <!-- CONTENIDO PRINCIPAL -->
     <div class="md:col-span-2">
@@ -31,7 +29,5 @@
     <?php get_sidebar(); ?>
 
   </div>
-
-</div>
 
 <?php get_footer(); ?>
