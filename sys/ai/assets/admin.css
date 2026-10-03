@@ -1,0 +1,401 @@
+.mil-ai {
+	--mil-border: #dcdcde;
+	--mil-bg: #fff;
+	--mil-soft: #f6f7f7;
+	--mil-accent: #2271b1;
+	--mil-ok: #00a32a;
+	--mil-warn: #dba617;
+	--mil-err: #d63638;
+	max-width: 1400px;
+}
+
+.mil-ai__title {
+	margin-bottom: 4px;
+}
+
+.mil-ai__lead {
+	max-width: 760px;
+	color: #50575e;
+	font-size: 14px;
+}
+
+.mil-ai__status {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 8px;
+	margin: 16px 0 8px;
+	padding: 10px 14px;
+	border: 1px solid var(--mil-border);
+	border-left-width: 4px;
+	border-radius: 4px;
+	background: var(--mil-bg);
+	font-size: 13px;
+}
+
+.mil-ai__status--ok { border-left-color: var(--mil-ok); }
+.mil-ai__status--warn { border-left-color: var(--mil-warn); }
+
+.mil-ai__dot {
+	width: 10px;
+	height: 10px;
+	border-radius: 50%;
+	background: var(--mil-ok);
+	flex: 0 0 auto;
+}
+
+.mil-ai__status--warn .mil-ai__dot { background: var(--mil-warn); }
+
+.mil-ai__sep {
+	width: 1px;
+	height: 14px;
+	background: var(--mil-border);
+}
+
+.mil-ai code {
+	background: var(--mil-soft);
+	padding: 1px 6px;
+	border-radius: 3px;
+	font-size: 12px;
+}
+
+.mil-ai__notice {
+	margin: 10px 0;
+	padding: 10px 14px;
+	border-radius: 4px;
+	font-size: 13px;
+}
+
+.mil-ai__notice--error {
+	background: #fcf0f1;
+	border-left: 4px solid var(--mil-err);
+	color: #8a2424;
+}
+
+.mil-ai__layout {
+	display: grid;
+	grid-template-columns: minmax(340px, 420px) minmax(0, 1fr);
+	gap: 16px;
+	align-items: start;
+	margin-top: 16px;
+}
+
+@media screen and (max-width: 1100px) {
+	.mil-ai__layout { grid-template-columns: 1fr; }
+}
+
+.mil-ai__panel {
+	background: var(--mil-bg);
+	border: 1px solid var(--mil-border);
+	border-radius: 6px;
+	padding: 16px;
+	margin-bottom: 16px;
+}
+
+.mil-ai__panel--params {
+	position: sticky;
+	top: 40px;
+}
+
+@media screen and (max-width: 1100px) {
+	.mil-ai__panel--params { position: static; }
+}
+
+.mil-ai__panel-title {
+	margin: 0 0 4px;
+	font-size: 15px;
+}
+
+.mil-ai__hint {
+	display: block;
+	margin-top: 4px;
+	color: #646970;
+	font-size: 12px;
+}
+
+.mil-ai__form {
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
+	margin-top: 12px;
+}
+
+.mil-ai__row {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 12px;
+}
+
+.mil-ai__field {
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+}
+
+.mil-ai__label {
+	font-weight: 600;
+	font-size: 12px;
+	text-transform: uppercase;
+	letter-spacing: .03em;
+	color: #3c434a;
+}
+
+.mil-ai input[type="text"],
+.mil-ai input[type="number"],
+.mil-ai select,
+.mil-ai textarea {
+	width: 100%;
+	max-width: none;
+}
+
+.mil-ai textarea {
+	font-family: Consolas, Monaco, monospace;
+	font-size: 12px;
+	line-height: 1.5;
+}
+
+.mil-ai select[multiple] {
+	padding: 4px;
+}
+
+.mil-ai__checks {
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+	padding: 10px;
+	background: var(--mil-soft);
+	border-radius: 4px;
+	font-size: 13px;
+}
+
+.mil-ai__checks label {
+	display: flex;
+	align-items: flex-start;
+	gap: 6px;
+}
+
+.mil-ai__checks input[type="checkbox"] {
+	margin-top: 2px;
+	flex: 0 0 auto;
+}
+
+.mil-ai__actions {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 8px;
+	margin-top: 12px;
+}
+
+.mil-ai__btn[disabled] {
+	opacity: .5;
+	cursor: not-allowed;
+}
+
+.mil-ai__spinner {
+	display: inline-block;
+	width: 16px;
+	height: 16px;
+	border: 2px solid #c3c4c7;
+	border-top-color: var(--mil-accent);
+	border-radius: 50%;
+	animation: mil-ai-spin .7s linear infinite;
+}
+
+@keyframes mil-ai-spin {
+	to { transform: rotate(360deg); }
+}
+
+.mil-ai__ideas {
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+	margin-top: 12px;
+	max-height: 620px;
+	overflow-y: auto;
+}
+
+.mil-ai__empty {
+	margin: 0;
+	padding: 28px 12px;
+	text-align: center;
+	color: #8c8f94;
+	background: var(--mil-soft);
+	border-radius: 4px;
+}
+
+.mil-ai__idea {
+	display: flex;
+	gap: 10px;
+	padding: 12px;
+	border: 1px solid var(--mil-border);
+	border-radius: 4px;
+	background: var(--mil-bg);
+}
+
+.mil-ai__idea.is-checked {
+	border-color: var(--mil-accent);
+	box-shadow: 0 0 0 1px var(--mil-accent) inset;
+	background: #f0f6fc;
+}
+
+.mil-ai__idea input[type="checkbox"] {
+	margin-top: 3px;
+	flex: 0 0 auto;
+}
+
+.mil-ai__idea-body { flex: 1 1 auto; min-width: 0; }
+
+.mil-ai__idea-title {
+	margin: 0 0 4px;
+	font-size: 14px;
+	font-weight: 600;
+}
+
+.mil-ai__idea-title code {
+	background: none;
+	padding: 0;
+	font-size: 13px;
+}
+
+.mil-ai__idea-meta {
+	margin: 4px 0;
+	font-size: 12px;
+	color: #50575e;
+}
+
+.mil-ai__tags {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 4px;
+	margin-top: 6px;
+}
+
+.mil-ai__tag {
+	padding: 1px 7px;
+	border-radius: 10px;
+	background: var(--mil-soft);
+	border: 1px solid var(--mil-border);
+	font-size: 11px;
+	color: #3c434a;
+}
+
+.mil-ai__article {
+	border: 1px solid var(--mil-border);
+	border-radius: 6px;
+	background: var(--mil-bg);
+	margin-bottom: 16px;
+	overflow: hidden;
+}
+
+.mil-ai__article-head {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 10px;
+	padding: 12px 16px;
+	background: var(--mil-soft);
+	border-bottom: 1px solid var(--mil-border);
+}
+
+.mil-ai__article-head h3 {
+	margin: 0;
+	font-size: 15px;
+	flex: 1 1 260px;
+}
+
+.mil-ai__badge {
+	padding: 2px 8px;
+	border-radius: 10px;
+	background: #eef;
+	font-size: 11px;
+	color: #3c434a;
+}
+
+.mil-ai__article-body {
+	padding: 16px;
+	display: grid;
+	grid-template-columns: 240px minmax(0, 1fr);
+	gap: 16px;
+}
+
+@media screen and (max-width: 782px) {
+	.mil-ai__article-body { grid-template-columns: 1fr; }
+}
+
+.mil-ai__cover img {
+	width: 100%;
+	height: auto;
+	border-radius: 4px;
+	display: block;
+	background: var(--mil-soft);
+}
+
+.mil-ai__cover-empty {
+	padding: 24px 10px;
+	text-align: center;
+	font-size: 12px;
+	color: #8c8f94;
+	background: var(--mil-soft);
+	border-radius: 4px;
+}
+
+.mil-ai__fields { display: flex; flex-direction: column; gap: 10px; }
+
+.mil-ai__preview {
+	margin-top: 10px;
+	border: 1px solid var(--mil-border);
+	border-radius: 4px;
+	padding: 12px 16px;
+	background: #fff;
+	max-height: 460px;
+	overflow-y: auto;
+}
+
+.mil-ai__preview:empty { display: none; }
+
+.mil-ai__preview img { max-width: 100%; height: auto; }
+.mil-ai__preview table { border-collapse: collapse; width: 100%; }
+.mil-ai__preview th, .mil-ai__preview td {
+	border: 1px solid #dcdcde;
+	padding: 6px 8px;
+	text-align: left;
+	font-size: 13px;
+}
+
+.mil-ai__notes {
+	margin-top: 10px;
+	padding: 10px 12px;
+	border-left: 4px solid var(--mil-warn);
+	background: #fcf9e8;
+	font-size: 12px;
+}
+
+.mil-ai__faq {
+	margin: 0;
+	padding-left: 18px;
+	font-size: 12px;
+}
+
+.mil-ai__faq li { margin-bottom: 4px; }
+
+.mil-ai__table { margin-top: 10px; }
+
+.mil-ai__msg {
+	padding: 8px 12px;
+	border-radius: 4px;
+	font-size: 13px;
+	margin-top: 10px;
+}
+
+.mil-ai__msg--error {
+	background: #fcf0f1;
+	border-left: 4px solid var(--mil-err);
+	color: #8a2424;
+}
+
+.mil-ai__msg--ok {
+	background: #edfaef;
+	border-left: 4px solid var(--mil-ok);
+	color: #1a5c22;
+}

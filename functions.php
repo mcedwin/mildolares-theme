@@ -118,3 +118,18 @@ update_option('medium_crop', 1); // hard crop
 
 update_option('large_size_w', 1000); // ideal para tu layout ~1000px
 update_option('large_size_h', 0); // 0 = altura proporcional
+
+
+// ---------------------------------------------------------------------------
+// Modulo MIL IA (redaccion asistida con OpenAI)
+// ---------------------------------------------------------------------------
+
+define('MIL_AI_VERSION', '1.0.0');
+
+require_once get_template_directory() . '/sys/ai/Env.php';
+require_once get_template_directory() . '/sys/ai/OpenAI.php';
+require_once get_template_directory() . '/sys/ai/Prompt.php';
+require_once get_template_directory() . '/sys/ai/Generator.php';
+require_once get_template_directory() . '/sys/ai/Admin.php';
+
+MIL_AI_Admin::instance();
