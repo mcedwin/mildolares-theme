@@ -10,13 +10,11 @@
 	}
 
 	var ideasBox = document.getElementById( 'mil-ai-ideas' );
-		var writeBtn = document.getElementById( 'mil-ai-write' );
-		var approveBtn = document.getElementById( 'mil-ai-approve' );
 	var proposeBtn = document.getElementById( 'mil-ai-propose' );
+	var approveBtn = document.getElementById( 'mil-ai-approve' );
 	var selectAllBtn = document.getElementById( 'mil-ai-select-all' );
 	var resultsSection = document.getElementById( 'mil-ai-results' );
 	var articlesBox = document.getElementById( 'mil-ai-articles' );
-
 	var spinnerPropose = document.getElementById( 'mil-ai-spinner-propose' );
 	var spinnerWrite = document.getElementById( 'mil-ai-spinner-write' );
 
@@ -66,7 +64,7 @@
 		return params;
 	}
 
-	function request( action, data, onDone ) {
+	function request( action, data ) {
 		var body = new window.FormData();
 		body.append( 'action', action );
 		body.append( 'nonce', CFG.nonce );
@@ -90,26 +88,27 @@
 					var msg = json && json.data && json.data.message ? json.data.message : 'Error desconocido.';
 					throw new Error( msg );
 				}
-				if ( onDone ) {
-					onDone( json.data );
-				}
 				return json.data;
 			} );
 	}
 
 	function busy( button, spinner, label ) {
 		button.disabled = true;
-		var original = button.dataset.label || button.textContent;
-		button.dataset.label = original;
+		button.dataset.label = button.dataset.label || button.textContent;
 		button.textContent = label;
-		spinner.hidden = false;
+		if ( spinner ) {
+			spinner.hidden = false;
+		}
 	}
 
 	function idle( button, spinner ) {
-		button.disabled = false;
-		button.textContent = button.dataset.label || button.textContent;
-		spinner.hidden = true;
-		syncWriteState();
+		if ( spinner ) {
+			spinner.hidden = true;
+		}
+		if ( button.dataset.label ) {
+			button.textContent = button.dataset.label;
+		}
+		syncState();
 	}
 
 	function notice( box, message, kind ) {
@@ -132,18 +131,20 @@
 		} );
 	}
 
-		function syncWriteState() {
-			var any = selectedIdeas().length > 0 && 0 === pending;
-			writeBtn.disabled = ! any;
-			if (approveBtn) { approveBtn.disabled = ! any; }
+	function syncState() {
+		var any = selectedIdeas().length > 0 && 0 === pending;
+
+		if ( approveBtn ) {
+			approveBtn.disabled = ! any;
 		}
+	}
 
 	function renderIdeas() {
 		ideasBox.innerHTML = '';
 
 		if ( ! ideas.length ) {
 			ideasBox.innerHTML = '<p class="mil-ai__empty">' + esc( t( 'vacio', 'Aun no hay propuestas.' ) ) + '</p>';
-			syncWriteState();
+			syncState();
 			return;
 		}
 
@@ -179,23 +180,24 @@
 			checkbox.addEventListener( 'change', function () {
 				idea.checked = checkbox.checked;
 				card.classList.toggle( 'is-checked', idea.checked );
-				syncWriteState();
+				syncState();
 			} );
 
 			ideasBox.appendChild( card );
 			idea.index = index;
 		} );
 
-		syncWriteState();
+		syncState();
 	}
 
 	proposeBtn.addEventListener( 'click', function () {
-		clearNotices( document.querySelector( '.mil-ai__panel--ideas' ) );
+		var panel = document.querySelector( '.mil-ai__panel--ideas' );
+		clearNotices( panel );
 
 		var params = serialize();
 
 		if ( ! String( params.tema || '' ).trim() ) {
-			notice( document.querySelector( '.mil-ai__panel--ideas' ), t( 'vacio', 'Escribe un tema.' ), 'error' );
+			notice( panel, t( 'vacio', 'Escribe un tema.' ), 'error' );
 			return;
 		}
 
@@ -211,7 +213,7 @@
 				renderIdeas();
 			} )
 			.catch( function ( err ) {
-				notice( document.querySelector( '.mil-ai__panel--ideas' ), err.message, 'error' );
+				notice( panel, err.message, 'error' );
 			} )
 			.finally( function () {
 				idle( proposeBtn, spinnerPropose );
@@ -226,192 +228,65 @@
 		renderIdeas();
 	} );
 
-	approveBtn.addEventListener( 'click', function () {
-		var queue = selectedIdeas().slice( 0, 12 );
+	if ( approveBtn ) {
+		approveBtn.addEventListener( 'click', function () {
+			var queue = selectedIdeas().slice( 0, 12 );
 
-		if ( ! queue.length ) {
-			notice( document.querySelector( ".mil-ai__panel--ideas" ), t( "selecciona", "Selecciona al menos una propuesta." ), "error" );
-			return;
-		}
+			if ( ! queue.length ) {
+				notice( document.querySelector( '.mil-ai__panel--ideas' ), t( 'selecciona', 'Selecciona al menos una propuesta.' ), 'error' );
+				return;
+			}
 
-		var params = serialize();
-		resultsSection.hidden = false;
-		clearNotices( articlesBox );
-		busy( approveBtn, spinnerWrite, "Aprobando y publicando..." );
-		pending = queue.length;
+			var params = serialize();
 
-		request( "mil_ai_approve", { params: params, ideas: queue } )
-			.then( function ( data ) {
-				var wrap = document.createElement( "div" );
-				wrap.className = "mil-ai__msg mil-ai__msg--ok";
-				wrap.textContent = "Articulos creados y publicados: " + ( data.created ? data.created.length : 0 );
-				articlesBox.appendChild( wrap );
+			resultsSection.hidden = false;
+			articlesBox.innerHTML = '';
+			busy( approveBtn, spinnerWrite, 'Aprobando y publicando...' );
+			pending = queue.length;
 
-				if ( data.created && data.created.length ) {
-					var list = document.createElement( "ul" );
-					list.className = "mil-ai__faq";
-					data.created.forEach( function ( c ) {
-						var li = document.createElement( "li" );
-						li.innerHTML = "<a href='" + esc( c.editUrl ) + "'>" + esc( c.titulo ) + "</a> - <a href='" + esc( c.viewUrl ) + "' target='_blank' rel='noopener'>Ver</a>";
-						list.appendChild( li );
-					} );
-					articlesBox.appendChild( list );
-				}
-				resultsSection.scrollIntoView( { behavior: "smooth", block: "start" } );
-			} )
-			.catch( function ( err ) {
-				notice( articlesBox, err.message, "error" );
-			} )
-			.finally( function () {
-				pending = 0;
-				idle( approveBtn, spinnerWrite );
-			} );
-	} );
-		}
-
-		next( 0 );
-	} );
-
-	function createSlot( idea ) {
-		var wrap = document.createElement( 'article' );
-		wrap.className = 'mil-ai__article';
-
-		wrap.innerHTML =
-			'<div class="mil-ai__article-head">' +
-				'<h3>' + esc( idea.titulo ) + '</h3>' +
-				'<span class="mil-ai__badge">redactando</span>' +
-			'</div>' +
-			'<div class="mil-ai__article-body">' +
-				'<div class="mil-ai__cover"><div class="mil-ai__cover-empty">creando imagen...</div></div>' +
-				'<div class="mil-ai__fields"><p class="mil-ai__hint">Esperando al modelo...</p></div>' +
-			'</div>';
-
-		articlesBox.appendChild( wrap );
-
-		return {
-			root: wrap,
-			head: wrap.querySelector( '.mil-ai__article-head' ),
-			cover: wrap.querySelector( '.mil-ai__cover' ),
-			body: wrap.querySelector( '.mil-ai__fields' )
-		};
-	}
-
-	function fillSlot( slot, data ) {
-		var article = data.article || {};
-		var image = data.image || {};
-		var idea = data.idea || {};
-
-		slot.cover.innerHTML = image.url
-			? '<img src="' + esc( image.url ) + '" alt="">'
-			: '<div class="mil-ai__cover-empty">' + esc( data.image_error || t( 'sinImagen', 'Sin imagen.' ) ) + '</div>';
-
-		slot.head.querySelector( '.mil-ai__badge' ).textContent =
-			( article.palabras || 0 ) + ' palabras';
-
-		var keywords = ( article.keywords || [] ).join( ', ' );
-
-		var faq = '';
-		if ( article.faq && article.faq.length ) {
-			faq = '<label class="mil-ai__field"><span class="mil-ai__label">Preguntas frecuentes</span>' +
-				'<ul class="mil-ai__faq">' +
-				article.faq.map( function ( item ) {
-					return '<li><strong>' + esc( item.pregunta ) + '</strong> ' + esc( item.respuesta ) + '</li>';
-				} ).join( '' ) +
-				'</ul></label>';
-		}
-
-		var payloadId = 'mil-ai-payload-' + Math.random().toString( 36 ).slice( 2, 10 );
-
-		slot.body.innerHTML =
-			'<label class="mil-ai__field"><span class="mil-ai__label">Titulo</span>' +
-				'<input type="text" data-role="titulo" value="' + esc( article.titulo ) + '"></label>' +
-			'<label class="mil-ai__field"><span class="mil-ai__label">Slug</span>' +
-				'<input type="text" data-role="slug" value="' + esc( article.slug ) + '"></label>' +
-			'<label class="mil-ai__field"><span class="mil-ai__label">Sumilla / meta description</span>' +
-				'<textarea data-role="sumilla" rows="2">' + esc( article.sumilla ) + '</textarea></label>' +
-			'<label class="mil-ai__field"><span class="mil-ai__label">Meta description (SEO)</span>' +
-				'<input type="text" data-role="meta_description" value="' + esc( article.meta_description ) + '"></label>' +
-			'<label class="mil-ai__field"><span class="mil-ai__label">Etiquetas</span>' +
-				'<input type="text" data-role="keywords" value="' + esc( keywords ) + '"></label>' +
-			'<label class="mil-ai__field"><span class="mil-ai__label">Contenido HTML</span>' +
-				'<textarea data-role="contenido_html" rows="16">' + esc( article.contenido_html ) + '</textarea></label>' +
-			'<div class="mil-ai__actions">' +
-				'<button type="button" class="button mil-ai__btn" data-role="preview-btn">Ver vista previa</button>' +
-				'<button type="button" class="button button-primary mil-ai__btn" data-role="save-btn">Guardar en WordPress</button>' +
-				'<span class="mil-ai__spinner" data-role="save-spinner" hidden></span>' +
-			'</div>' +
-			'<div class="mil-ai__preview" data-role="preview"></div>' +
-			( faq ? faq : '' ) +
-			( article.notas_verificacion
-				? '<div class="mil-ai__notes"><strong>Verificar antes de publicar:</strong> ' + esc( article.notas_verificacion ) + '</div>'
-				: '' );
-
-		var store = {
-			idea: idea,
-			article: article,
-			image: image
-		};
-
-		slot.body.querySelector( '[data-role="preview-btn"]' ).addEventListener( 'click', function ( ev ) {
-			var preview = slot.body.querySelector( '[data-role="preview"]' );
-			var active = ev.target.dataset.active === '1';
-			preview.innerHTML = active ? '' : slot.body.querySelector( '[data-role="contenido_html"]' ).value;
-			ev.target.dataset.active = active ? '0' : '1';
-			ev.target.textContent = active ? 'Ver vista previa' : 'Ocultar vista previa';
-		} );
-
-		var saveBtn = slot.body.querySelector( '[data-role="save-btn"]' );
-		var saveSpinner = slot.body.querySelector( '[data-role="save-spinner"]' );
-		var saveLabel = saveBtn.textContent;
-
-		saveBtn.addEventListener( 'click', function () {
-			store.article.titulo = slot.body.querySelector( '[data-role="titulo"]' ).value;
-			store.article.slug = slot.body.querySelector( '[data-role="slug"]' ).value;
-			store.article.sumilla = slot.body.querySelector( '[data-role="sumilla"]' ).value;
-			store.article.meta_description = slot.body.querySelector( '[data-role="meta_description"]' ).value;
-			store.article.keywords = slot.body.querySelector( '[data-role="keywords"]' ).value
-				.split( ',' )
-				.map( function ( k ) {
-					return k.trim();
-				} )
-				.filter( Boolean );
-			store.article.contenido_html = slot.body.querySelector( '[data-role="contenido_html"]' ).value;
-
-			saveBtn.disabled = true;
-			saveBtn.textContent = t( 'guardando', 'Guardando...' );
-			saveSpinner.hidden = false;
-
-			request( 'mil_ai_save', { params: serialize(), payload: store } )
+			request( 'mil_ai_approve', { params: params, ideas: queue } )
 				.then( function ( data ) {
-					var done = notice(
-						slot.body,
-						'draft' === data.status ? 'Borrador creado.' : 'Publicado.',
-						'ok'
-					);
+					var created = data.created || [];
 
-					var links = document.createElement( 'span' );
-					links.className = 'mil-ai__actions';
-					links.innerHTML =
-						'<a class="button button-primary" href="' + esc( data.editUrl ) + '">Editar en WordPress</a>' +
-						'<a class="button" href="' + esc( data.viewUrl ) + '" target="_blank" rel="noopener">Ver en el sitio</a>';
-					done.appendChild( links );
+					notice( articlesBox, 'Articulos creados y publicados: ' + created.length, 'ok' );
 
-					saveBtn.textContent = 'Guardado';
+					if ( created.length ) {
+						var list = document.createElement( 'ul' );
+						list.className = 'mil-ai__faq';
+
+						created.forEach( function ( c ) {
+							var li = document.createElement( 'li' );
+							var a1 = document.createElement( 'a' );
+							a1.href = c.editUrl;
+							a1.textContent = c.titulo;
+							var a2 = document.createElement( 'a' );
+							a2.href = c.viewUrl;
+							a2.target = '_blank';
+							a2.rel = 'noopener';
+							a2.textContent = 'Ver';
+							li.appendChild( a1 );
+							li.appendChild( document.createTextNode( ' - ' ) );
+							li.appendChild( a2 );
+							list.appendChild( li );
+						} );
+
+						articlesBox.appendChild( list );
+					}
+
+					ideas = ideas.filter( function ( idea ) {
+						return ! idea.checked;
+					} );
+					renderIdeas();
+
+					resultsSection.scrollIntoView( { behavior: 'smooth', block: 'start' } );
 				} )
 				.catch( function ( err ) {
-					notice( slot.body, err.message, 'error' );
-					saveBtn.disabled = false;
-					saveBtn.textContent = saveLabel;
+					notice( articlesBox, err.message, 'error' );
 				} )
 				.finally( function () {
-					saveSpinner.hidden = true;
-					writeBtn.disabled = false;
-					syncWriteState();
+					pending = 0;
+					idle( approveBtn, spinnerWrite );
 				} );
 		} );
-
-		slot.root.setAttribute( 'data-payload-id', payloadId );
 	}
 } )();
-
-

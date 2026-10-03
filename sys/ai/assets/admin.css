@@ -204,6 +204,10 @@
 	animation: mil-ai-spin .7s linear infinite;
 }
 
+.mil-ai__spinner[hidden] {
+	display: none;
+}
+
 @keyframes mil-ai-spin {
 	to { transform: rotate(360deg); }
 }
