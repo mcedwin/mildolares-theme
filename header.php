@@ -1,7 +1,3 @@
-<a href="#contenido" class="sr-only focus:not-sr-only focus:absolute focus:z-50 focus:top-2 focus:left-2 focus:px-4 focus:py-2 focus:bg-green-800 focus:text-white focus:rounded-lg">
-  <?php esc_html_e('Saltar al contenido', 'mil'); ?>
-</a>
-
 <!DOCTYPE html>
 <html <?php language_attributes(); ?>>
 <head>
@@ -12,6 +8,10 @@
 
 <body <?php body_class('bg-white text-gray-900'); ?>>
 <?php wp_body_open(); ?>
+
+<a href="#contenido" class="sr-only focus:not-sr-only focus:absolute focus:z-50 focus:top-2 focus:left-2 focus:px-4 focus:py-2 focus:bg-green-800 focus:text-white focus:rounded-lg">
+  <?php esc_html_e('Saltar al contenido', 'mil'); ?>
+</a>
 
 <header class="border-b">
   <div class="max-w-site mx-auto px-4 sm:px-6 py-4 flex items-center justify-between gap-4">
