@@ -21,19 +21,23 @@ $mil_link_destacado = $mil_destacado ? mil_first_term_link($mil_destacado->ID) :
 
     <?php if ($mil_destacado) : ?>
 
+      <?php $mil_dest_has_thumb = has_post_thumbnail($mil_destacado->ID); ?>
+
       <!-- NOTICIA DESTACADA -->
-      <article class="grid grid-cols-1 md:grid-cols-2 gap-8 items-start pb-10 border-b border-gray-200">
+      <article class="<?php echo $mil_dest_has_thumb ? 'grid grid-cols-1 md:grid-cols-2 gap-8 items-start pb-10 border-b border-gray-200' : 'rounded-xl border border-green-100 bg-green-50 p-6 sm:p-8 mb-10'; ?>">
 
-        <a href="<?php echo esc_url(get_permalink($mil_destacado)); ?>" class="block" tabindex="-1" aria-hidden="true">
-          <?php
-          echo mil_post_thumbnail('large', 'rounded-xl w-full', 'aspect-[3/2]', $mil_destacado->ID, array('loading' => 'eager'));
-          ?>
-        </a>
+        <?php if ($mil_dest_has_thumb) : ?>
+          <a href="<?php echo esc_url(get_permalink($mil_destacado)); ?>" class="block" tabindex="-1" aria-hidden="true">
+            <?php
+            echo mil_post_thumbnail('large', 'rounded-xl w-full', 'aspect-[3/2]', $mil_destacado->ID, array('loading' => 'eager'));
+            ?>
+          </a>
+        <?php endif; ?>
 
-        <div>
+        <div class="<?php echo $mil_dest_has_thumb ? '' : 'max-w-3xl'; ?>">
           <?php if ($mil_cat_destacado) : ?>
             <a href="<?php echo esc_url($mil_link_destacado); ?>"
-               class="inline-block text-xs font-semibold uppercase tracking-wide text-green-900 bg-green-50 px-3 py-1 rounded-full mb-4 hover:bg-green-100 transition">
+               class="inline-block text-xs font-semibold uppercase tracking-wide text-green-900 <?php echo $mil_dest_has_thumb ? 'bg-green-50 hover:bg-green-100' : 'bg-white hover:bg-green-100'; ?> px-3 py-1 rounded-full mb-4 transition">
               <?php echo esc_html($mil_cat_destacado[0]->name); ?>
             </a>
           <?php endif; ?>
@@ -74,13 +78,18 @@ $mil_link_destacado = $mil_destacado ? mil_first_term_link($mil_destacado->ID) :
             the_post();
             $mil_terms = mil_post_terms(get_the_ID(), 1);
             $mil_link  = mil_first_term_link(get_the_ID());
+            $mil_thumb = has_post_thumbnail();
             ?>
 
-          <article class="flex flex-col">
+          <article class="<?php echo $mil_thumb ? 'flex flex-col' : 'flex flex-col h-full rounded-xl border border-green-100 bg-green-50 p-5 transition hover:border-green-300'; ?>">
 
-            <a href="<?php the_permalink(); ?>" class="block mb-3" tabindex="-1" aria-hidden="true">
-              <?php echo mil_post_thumbnail('medium', 'rounded-lg w-full', 'aspect-[3/2]'); ?>
-            </a>
+            <?php if ($mil_thumb) : ?>
+              <a href="<?php the_permalink(); ?>" class="block mb-3" tabindex="-1" aria-hidden="true">
+                <?php echo mil_post_thumbnail('medium', 'rounded-lg w-full', 'aspect-[3/2]'); ?>
+              </a>
+            <?php else : ?>
+              <span class="block w-10 h-1.5 rounded-full bg-green-800 mb-4" aria-hidden="true"></span>
+            <?php endif; ?>
 
             <div class="flex flex-wrap items-center gap-2 text-xs text-gray-500 mb-2">
               <?php if ($mil_terms) : ?>

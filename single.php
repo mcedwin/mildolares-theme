@@ -138,11 +138,16 @@
           <?php
           while ($mil_related->have_posts()) :
               $mil_related->the_post();
+              $mil_thumb = has_post_thumbnail();
               ?>
-              <article class="flex flex-col">
-                <a href="<?php the_permalink(); ?>" class="block mb-3" tabindex="-1" aria-hidden="true">
-                  <?php echo mil_post_thumbnail('medium', 'rounded-lg w-full', 'aspect-[3/2]'); ?>
-                </a>
+              <article class="<?php echo $mil_thumb ? 'flex flex-col' : 'flex flex-col h-full rounded-xl border border-green-100 bg-green-50 p-5 transition hover:border-green-300'; ?>">
+                <?php if ($mil_thumb) : ?>
+                  <a href="<?php the_permalink(); ?>" class="block mb-3" tabindex="-1" aria-hidden="true">
+                    <?php echo mil_post_thumbnail('medium', 'rounded-lg w-full', 'aspect-[3/2]'); ?>
+                  </a>
+                <?php else : ?>
+                  <span class="block w-10 h-1.5 rounded-full bg-green-800 mb-4" aria-hidden="true"></span>
+                <?php endif; ?>
                 <h3 class="text-lg font-semibold leading-snug mb-2">
                   <a href="<?php the_permalink(); ?>" class="hover:text-green-900 hover:underline transition">
                     <?php the_title(); ?>

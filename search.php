@@ -16,13 +16,15 @@
     <?php if (have_posts()) : ?>
 
       <div class="space-y-8">
-        <?php while (have_posts()) : the_post(); ?>
+        <?php while (have_posts()) : the_post(); $mil_thumb = has_post_thumbnail(); ?>
 
-          <article class="flex flex-col sm:flex-row gap-5 pb-8 border-b border-gray-100 last:border-0">
+          <article class="flex flex-col sm:flex-row gap-5 pb-8 border-b border-b-gray-100 last:border-b-0<?php echo $mil_thumb ? '' : ' border-l-4 border-l-green-800 pl-4 sm:pl-5 rounded-r-lg'; ?>">
 
-            <a href="<?php the_permalink(); ?>" class="block shrink-0 w-full sm:w-40" tabindex="-1" aria-hidden="true">
-              <?php echo mil_post_thumbnail('thumbnail', 'rounded-lg w-full', 'aspect-[3/2] sm:aspect-auto sm:h-28'); ?>
-            </a>
+            <?php if ($mil_thumb) : ?>
+              <a href="<?php the_permalink(); ?>" class="block shrink-0 w-full sm:w-40" tabindex="-1" aria-hidden="true">
+                <?php echo mil_post_thumbnail('thumbnail', 'rounded-lg w-full', 'aspect-[3/2] sm:aspect-auto sm:h-28'); ?>
+              </a>
+            <?php endif; ?>
 
             <div class="flex-1 min-w-0">
               <div class="flex flex-wrap items-center gap-2 text-xs text-gray-500 mb-1">

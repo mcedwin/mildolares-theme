@@ -24,12 +24,16 @@
 
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
 
-          <?php while (have_posts()) : the_post(); ?>
+          <?php while (have_posts()) : the_post(); $mil_thumb = has_post_thumbnail(); ?>
 
-            <article class="flex flex-col">
-              <a href="<?php the_permalink(); ?>" class="block mb-3" tabindex="-1" aria-hidden="true">
-                <?php echo mil_post_thumbnail('medium', 'rounded-lg w-full', 'aspect-[3/2]'); ?>
-              </a>
+            <article class="<?php echo $mil_thumb ? 'flex flex-col' : 'flex flex-col h-full rounded-xl border border-green-100 bg-green-50 p-5 transition hover:border-green-300'; ?>">
+              <?php if ($mil_thumb) : ?>
+                <a href="<?php the_permalink(); ?>" class="block mb-3" tabindex="-1" aria-hidden="true">
+                  <?php echo mil_post_thumbnail('medium', 'rounded-lg w-full', 'aspect-[3/2]'); ?>
+                </a>
+              <?php else : ?>
+                <span class="block w-10 h-1.5 rounded-full bg-green-800 mb-4" aria-hidden="true"></span>
+              <?php endif; ?>
 
               <div class="flex items-center gap-2 text-xs text-gray-500 mb-2">
                 <?php mil_date_line(); ?>
@@ -43,7 +47,7 @@
                 </a>
               </h2>
 
-              <p class="text-sm leading-snug text-gray-700 mt-auto">
+              <p class="text-sm leading-snug text-gray-700 <?php echo $mil_thumb ? 'mt-auto' : 'mt-0'; ?>">
                 <?php echo esc_html(wp_trim_words(wp_strip_all_tags(get_the_excerpt()), 25, '…')); ?>
               </p>
             </article>
